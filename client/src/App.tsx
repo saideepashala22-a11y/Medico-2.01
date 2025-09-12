@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/use-auth-simple";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import NotFound from "@/pages/not-found";
 import Login from "@/pages/login";
 import Dashboard from "@/pages/dashboard";
@@ -61,14 +62,21 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function TitleManager() {
+  useDocumentTitle();
+  return null;
+}
+
 function Router() {
   return (
-    <Switch>
-      <Route path="/login">
-        <PublicRoute>
-          <Login />
-        </PublicRoute>
-      </Route>
+    <>
+      <TitleManager />
+      <Switch>
+        <Route path="/login">
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        </Route>
       
       <Route path="/dashboard">
         <ProtectedRoute>
@@ -179,7 +187,8 @@ function Router() {
       
       {/* Fallback to 404 */}
       <Route component={NotFound} />
-    </Switch>
+      </Switch>
+    </>
   );
 }
 
