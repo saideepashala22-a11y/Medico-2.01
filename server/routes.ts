@@ -699,6 +699,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post('/api/lab-test-definitions/bulk', authenticateToken, async (req: any, res) => {
+    try {
+      const testDefinitions = req.body.testDefinitions;
+      
+      if (!Array.isArray(testDefinitions) || testDefinitions.length === 0) {
+        return res.status(400).json({ message: 'Test definitions array is required' });
+      }
+
+      // Add createdBy to each test definition
+      const definitionsWithUser = testDefinitions.map(def => ({
+        ...def,
+        createdBy: req.user.id
+      }));
+
+      const result = await storage.bulkCreateLabTestDefinitions(definitionsWithUser);
+      res.status(201).json(result);
+    } catch (error) {
+      console.error('Bulk lab test definitions creation error:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
   // Surgical case sheet routes
   app.get('/api/surgical-case-sheets/:id', authenticateToken, async (req: any, res) => {
     try {

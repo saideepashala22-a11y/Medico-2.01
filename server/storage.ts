@@ -172,6 +172,14 @@ export interface IStorage {
   // Activities/Notifications
   createActivity(activity: InsertActivity): Promise<Activity>;
   getRecentActivities(limit?: number): Promise<Activity[]>;
+  
+  // Lab Test Definitions
+  getAllLabTestDefinitions(): Promise<any[]>;
+  getActiveLabTestDefinitions(): Promise<any[]>;
+  createLabTestDefinition(definition: any): Promise<any>;
+  updateLabTestDefinition(id: string, updates: Partial<any>): Promise<any>;
+  deleteLabTestDefinition(id: string): Promise<void>;
+  bulkCreateLabTestDefinitions(testDefinitions: Array<any>): Promise<{ imported: number; duplicates: number }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -782,6 +790,43 @@ export class DatabaseStorage implements IStorage {
     await db.update(labTestDefinitions)
       .set({ isActive: false, updatedAt: new Date() })
       .where(eq(labTestDefinitions.id, id));
+  }
+
+  async bulkCreateLabTestDefinitions(testDefinitions: Array<any>): Promise<{ imported: number; duplicates: number }> {
+    let imported = 0;
+    let duplicates = 0;
+
+    for (const testDef of testDefinitions) {
+      try {
+        // Check for duplicates based on test name and department
+        const [existing] = await db.select()
+          .from(labTestDefinitions)
+          .where(
+            and(
+              eq(labTestDefinitions.testName, testDef.testName),
+              eq(labTestDefinitions.department, testDef.department)
+            )
+          )
+          .limit(1);
+
+        if (existing) {
+          duplicates++;
+          console.log(`Duplicate found: ${testDef.testName} - ${testDef.department}`);
+          continue;
+        }
+
+        // Create the test definition if no duplicate found
+        await db.insert(labTestDefinitions)
+          .values(testDef);
+        
+        imported++;
+      } catch (error) {
+        console.error(`Error creating test definition ${testDef.testName}:`, error);
+        // Continue processing other tests even if one fails
+      }
+    }
+
+    return { imported, duplicates };
   }
 
   // Surgical Case Sheet Methods
