@@ -1,0 +1,10 @@
+BEGIN;
+INSERT INTO lab_test_definitions (test_name, department, cost, description, is_active, created_by) VALUES ('X-RAY BOTH  KNEE JOINT AP', 'Radiology', 500, '', true, '883c712e-8b31-46cd-b46b-9b11f0a41cbe');
+INSERT INTO lab_test_definitions (test_name, department, cost, description, is_active, created_by) VALUES ('SERUM CHOLESTROL', 'Biochemistry', 200, '', true, '883c712e-8b31-46cd-b46b-9b11f0a41cbe');
+INSERT INTO lab_test_definitions (test_name, department, cost, description, is_active, created_by) VALUES ('KETON BODIES', 'Pathology', 100, '', true, '883c712e-8b31-46cd-b46b-9b11f0a41cbe');
+INSERT INTO lab_test_definitions (test_name, department, cost, description, is_active, created_by) VALUES ('SERUM LIPASE', 'Biochemistry', 400, '', true, '883c712e-8b31-46cd-b46b-9b11f0a41cbe');
+INSERT INTO lab_test_definitions (test_name, department, cost, description, is_active, created_by) VALUES ('2D ECHO & COLOUR DOPPLER', 'Radiology', 1500, '', true, '883c712e-8b31-46cd-b46b-9b11f0a41cbe');
+INSERT INTO lab_test_definitions (test_name, department, cost, description, is_active, created_by) VALUES ('SERUM MAGNESIUM', 'Biochemistry', 250, '', true, '883c712e-8b31-46cd-b46b-9b11f0a41cbe');
+INSERT INTO lab_test_definitions (test_name, department, cost, description, is_active, created_by) VALUES ('COOMBS INDIRECT', 'Pathology', 450, '', true, '883c712e-8b31-46cd-b46b-9b11f0a41cbe');
+INSERT INTO lab_test_definitions (test_name, department, cost, description, is_active, created_by) VALUES ('FSH,LH,PROLACTIN', 'Endocrinology', 1500, '', true, '883c712e-8b31-46cd-b46b-9b11f0a41cbe');
+COMMIT;
