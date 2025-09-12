@@ -49,6 +49,25 @@ export interface IStorage {
   updateLabTestDefinition(id: string, updates: Partial<any>): Promise<any>;
   deleteLabTestDefinition(id: string): Promise<void>;
   
+  // Lab Revenue
+  getLabRevenue(fromDate: string, toDate: string): Promise<{
+    totalRevenue: number;
+    totalTests: number;
+    dateRange: { from: string; to: string; };
+    testBreakdown: Array<{
+      testName: string;
+      department: string;
+      count: number;
+      totalRevenue: number;
+      averageRevenue: number;
+    }>;
+    dailyRevenue: Array<{
+      date: string;
+      revenue: number;
+      testsCount: number;
+    }>;
+  }>;
+  
   // Prescriptions
   getPrescription(id: string): Promise<Prescription | undefined>;
   getPrescriptionsByPatient(patientId: string): Promise<Prescription[]>;
@@ -1170,6 +1189,124 @@ export class DatabaseStorage implements IStorage {
       .limit(limit);
     
     return recentActivities;
+  }
+
+  // Lab Revenue Implementation
+  async getLabRevenue(fromDate: string, toDate: string): Promise<{
+    totalRevenue: number;
+    totalTests: number;
+    dateRange: { from: string; to: string; };
+    testBreakdown: Array<{
+      testName: string;
+      department: string;
+      count: number;
+      totalRevenue: number;
+      averageRevenue: number;
+    }>;
+    dailyRevenue: Array<{
+      date: string;
+      revenue: number;
+      testsCount: number;
+    }>;
+  }> {
+    const startDate = new Date(fromDate);
+    startDate.setHours(0, 0, 0, 0);
+    
+    const endDate = new Date(toDate);
+    endDate.setHours(23, 59, 59, 999);
+
+    // Get all lab tests in the date range
+    const labTestsInRange = await db.select({
+      id: labTests.id,
+      testTypes: labTests.testTypes,
+      totalCost: labTests.totalCost,
+      createdAt: labTests.createdAt,
+    })
+    .from(labTests)
+    .where(sql`${labTests.createdAt} >= ${startDate} AND ${labTests.createdAt} <= ${endDate}`)
+    .orderBy(desc(labTests.createdAt));
+
+    // Calculate total revenue and tests
+    const totalRevenue = labTestsInRange.reduce((sum, test) => sum + Number(test.totalCost), 0);
+    const totalTests = labTestsInRange.length;
+
+    // Get test definitions for mapping names to departments
+    const testDefinitions = await db.select()
+      .from(labTestDefinitions)
+      .where(eq(labTestDefinitions.isActive, true));
+
+    const testDefMap = new Map(testDefinitions.map(def => [def.testName, def]));
+
+    // Calculate test breakdown
+    const testBreakdownMap = new Map<string, {
+      testName: string;
+      department: string;
+      count: number;
+      totalRevenue: number;
+    }>();
+
+    for (const test of labTestsInRange) {
+      const testTypes = Array.isArray(test.testTypes) ? test.testTypes : [];
+      const costPerTest = Number(test.totalCost) / Math.max(testTypes.length, 1);
+
+      for (const testType of testTypes) {
+        const testName = typeof testType === 'string' ? testType : testType.testName || 'Unknown Test';
+        const testDef = testDefMap.get(testName);
+        const department = testDef?.department || 'Unknown Department';
+
+        const key = `${testName}-${department}`;
+        if (testBreakdownMap.has(key)) {
+          const existing = testBreakdownMap.get(key)!;
+          existing.count += 1;
+          existing.totalRevenue += costPerTest;
+        } else {
+          testBreakdownMap.set(key, {
+            testName,
+            department,
+            count: 1,
+            totalRevenue: costPerTest,
+          });
+        }
+      }
+    }
+
+    const testBreakdown = Array.from(testBreakdownMap.values()).map(test => ({
+      ...test,
+      averageRevenue: test.totalRevenue / test.count,
+    })).sort((a, b) => b.totalRevenue - a.totalRevenue);
+
+    // Calculate daily revenue
+    const dailyRevenueMap = new Map<string, { revenue: number; testsCount: number; }>();
+
+    for (const test of labTestsInRange) {
+      const dateKey = test.createdAt.toISOString().split('T')[0];
+      if (dailyRevenueMap.has(dateKey)) {
+        const existing = dailyRevenueMap.get(dateKey)!;
+        existing.revenue += Number(test.totalCost);
+        existing.testsCount += 1;
+      } else {
+        dailyRevenueMap.set(dateKey, {
+          revenue: Number(test.totalCost),
+          testsCount: 1,
+        });
+      }
+    }
+
+    const dailyRevenue = Array.from(dailyRevenueMap.entries())
+      .map(([date, data]) => ({
+        date,
+        revenue: data.revenue,
+        testsCount: data.testsCount,
+      }))
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+    return {
+      totalRevenue,
+      totalTests,
+      dateRange: { from: fromDate, to: toDate },
+      testBreakdown,
+      dailyRevenue,
+    };
   }
 }
 

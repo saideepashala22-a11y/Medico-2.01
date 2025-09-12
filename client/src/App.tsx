@@ -25,6 +25,7 @@ import Settings from "@/pages/settings";
 import DoctorsManagement from "@/pages/doctors";
 import MedicineForm from "@/pages/medicine-form";
 import PatientsListPage from "@/pages/patients-list";
+import LabRevenuePage from "@/pages/lab-revenue";
 import { Loader2 } from "lucide-react";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -123,6 +124,12 @@ function Router() {
       <Route path="/lab/report/:labTestId">
         <ProtectedRoute>
           <LabReport />
+        </ProtectedRoute>
+      </Route>
+      
+      <Route path="/lab/revenue">
+        <ProtectedRoute>
+          <LabRevenuePage />
         </ProtectedRoute>
       </Route>
       

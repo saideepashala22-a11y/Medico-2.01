@@ -328,6 +328,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Lab Revenue Route
+  app.get('/api/lab-revenue', authenticateToken, async (req: any, res) => {
+    try {
+      // Validate date parameters with Zod
+      const dateQuerySchema = z.object({
+        from: z.string().refine((date) => {
+          const parsedDate = new Date(date);
+          return !isNaN(parsedDate.getTime()) && /^\d{4}-\d{2}-\d{2}$/.test(date);
+        }, { message: 'From date must be in YYYY-MM-DD format' }),
+        to: z.string().refine((date) => {
+          const parsedDate = new Date(date);
+          return !isNaN(parsedDate.getTime()) && /^\d{4}-\d{2}-\d{2}$/.test(date);
+        }, { message: 'To date must be in YYYY-MM-DD format' }),
+      }).refine((data) => {
+        const fromDate = new Date(data.from);
+        const toDate = new Date(data.to);
+        return fromDate <= toDate;
+      }, { message: 'From date must be before or equal to to date' });
+
+      const validatedQuery = dateQuerySchema.parse(req.query);
+      
+      const revenueData = await storage.getLabRevenue(validatedQuery.from, validatedQuery.to);
+      res.json(revenueData);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: 'Invalid date parameters', 
+          errors: error.errors 
+        });
+      }
+      console.error('Lab revenue error:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
   // Prescription routes
   app.post('/api/prescriptions', authenticateToken, async (req: any, res) => {
     try {

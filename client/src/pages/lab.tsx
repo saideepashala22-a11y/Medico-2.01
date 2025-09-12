@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useLocation } from 'wouter';
-import { ArrowLeft, TestTube, Plus, FileText, User, Calendar, Clipboard, FlaskConical, Search } from 'lucide-react';
+import { ArrowLeft, TestTube, Plus, FileText, User, Calendar, Clipboard, FlaskConical, Search, BarChart3 } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function Lab() {
@@ -133,6 +133,26 @@ export default function Lab() {
               <p className="text-gray-600 text-center">Generate and download lab test reports</p>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Revenue Reporting Card */}
+        <div className="mb-8">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Financial Reports</h2>
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
+              <Link href="/lab/revenue">
+                <CardHeader className="text-center">
+                  <div className="mx-auto w-12 h-12 bg-green-500 bg-opacity-10 rounded-full flex items-center justify-center mb-4 group-hover:bg-opacity-20 transition-colors">
+                    <BarChart3 className="h-6 w-6 text-green-600" />
+                  </div>
+                  <CardTitle className="text-lg">Revenue Report</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600 text-center">View detailed revenue analysis and test-wise breakdown by date range</p>
+                </CardContent>
+              </Link>
+            </Card>
+          </div>
         </div>
 
         {/* Patient Search Bar */}
