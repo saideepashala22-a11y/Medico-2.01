@@ -5,13 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Save, ArrowLeft, Package, Upload } from 'lucide-react';
+import { Save, ArrowLeft, Package } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import { MedicineInventory } from '@shared/schema';
-import { ExcelUpload } from '@/components/ExcelUpload';
 
 export default function MedicineForm() {
   const [location, navigate] = useLocation();
@@ -192,23 +190,8 @@ export default function MedicineForm() {
         </div>
       </div>
 
-      {/* Tabs for Single or Bulk Upload */}
-      <Tabs defaultValue={isEdit ? "single" : "single"} className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="single" className="flex items-center gap-2" data-testid="tab-single">
-            <Package className="h-4 w-4" />
-            {isEdit ? 'Edit Medicine' : 'Add Medicine'}
-          </TabsTrigger>
-          {!isEdit && (
-            <TabsTrigger value="bulk" className="flex items-center gap-2" data-testid="tab-bulk">
-              <Upload className="h-4 w-4" />
-              Bulk Upload
-            </TabsTrigger>
-          )}
-        </TabsList>
-
-        {/* Single Medicine Form Tab */}
-        <TabsContent value="single" className="space-y-6">
+      {/* Medicine Form */}
+      <div className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle className="text-medical-primary">
@@ -387,29 +370,7 @@ export default function MedicineForm() {
               </form>
             </CardContent>
           </Card>
-        </TabsContent>
-
-        {/* Bulk Upload Tab */}
-        {!isEdit && (
-          <TabsContent value="bulk" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-medical-primary flex items-center gap-2">
-                  <Upload className="h-5 w-5" />
-                  Bulk Upload Medicines
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ExcelUpload 
-                  onSuccess={() => {
-                    queryClient.invalidateQueries({ queryKey: ['/api/medicines'] });
-                  }}
-                />
-              </CardContent>
-            </Card>
-          </TabsContent>
-        )}
-      </Tabs>
+      </div>
     </div>
   );
 }
