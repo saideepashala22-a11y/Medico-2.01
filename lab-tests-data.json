@@ -1,0 +1,1773 @@
+[
+  {
+    "testName": "24 Hrs URINARY PROTEINS",
+    "department": "Biochemistry",
+    "cost": 700,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ABSOLUTE EOSINOPHIL COUNT(AEC)",
+    "department": "Pathology",
+    "cost": 600,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "AFB (Acid Fast Bacilli) CULTURE",
+    "department": "Microbiology",
+    "cost": 800,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ALBUMIN",
+    "department": "Pathology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ANTENATAL PROFILE(ANC PROFILE)",
+    "department": "Pathology",
+    "cost": 1,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "APTT",
+    "department": "Pathology",
+    "cost": 600,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ASO TITRE",
+    "department": "Pathology",
+    "cost": 300,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ASO/R.A/C.R.P",
+    "department": "Pathology",
+    "cost": 900,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SERUM AMYLASE",
+    "department": "Biochemistry",
+    "cost": 400,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "BICARBONATE",
+    "department": "Pathology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "BILE SALT & BILE PIGMENTS",
+    "department": "Pathology",
+    "cost": 50,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SERUM BILIRUBIN",
+    "department": "Biochemistry",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "BT CT",
+    "department": "Pathology",
+    "cost": 100,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "BGNNHNHNHN",
+    "department": "Pathology",
+    "cost": 800,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "BLOOD GROUP",
+    "department": "Biochemistry",
+    "cost": 100,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "BLOOD UREA",
+    "department": "Biochemistry",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "BLOOD UREA NITROGEN (BUN)",
+    "department": "Biochemistry",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SERUM CALCIUM",
+    "department": "Biochemistry",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "CBP",
+    "department": "Hematology",
+    "cost": 300,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "CK-MB",
+    "department": "Pathology",
+    "cost": 300,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "CK-NAC",
+    "department": "Pathology",
+    "cost": 300,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ARTHRITIS PROFILE",
+    "department": "Pathology",
+    "cost": 2500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "CRP",
+    "department": "Pathology",
+    "cost": 300,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "URINE CULTURE & SENSIVITY",
+    "department": "Microbiology",
+    "cost": 750,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "DENGUE IgG, IgM & NS1",
+    "department": "Immunology",
+    "cost": 1500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ESR",
+    "department": "Hematology",
+    "cost": 100,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ESTROGEN",
+    "department": "Endocrinology",
+    "cost": 600,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "FBS & PLBS",
+    "department": "Pathology",
+    "cost": 100,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "FBS",
+    "department": "Pathology",
+    "cost": 50,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "FERRITIN",
+    "department": "Pathology",
+    "cost": 1000,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "FSH",
+    "department": "Endocrinology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "FT3 FT4",
+    "department": "Endocrinology",
+    "cost": 600,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "HbA1c",
+    "department": "Pathology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "GLUCOSE TOLERANCE TEST(GTT)",
+    "department": "Biochemistry",
+    "cost": 400,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "GLYCOSYLATED HEMOGLOBIN(GHbA1c)",
+    "department": "Pathology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "GRAM STAIN",
+    "department": "Microbiology",
+    "cost": 250,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "HAEMOGLOBIN",
+    "department": "Hematology",
+    "cost": 100,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "HAEMOGRAM",
+    "department": "Hematology",
+    "cost": 250,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ECG",
+    "department": "Radiology",
+    "cost": 400,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "CUE",
+    "department": "Pathology",
+    "cost": 100,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "HBsAg",
+    "department": "Immunology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "HCV",
+    "department": "Immunology",
+    "cost": 600,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "HIV",
+    "department": "Immunology",
+    "cost": 300,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SERUM IRON",
+    "department": "Biochemistry",
+    "cost": 650,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "LH",
+    "department": "Endocrinology",
+    "cost": 300,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "LIPID PROFILE TEST",
+    "department": "Biochemistry",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "LIVER FUNCTION TEST(LFT)",
+    "department": "Pathology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "MALARIAL PARASITE (PV & PF)",
+    "department": "Immunology",
+    "cost": 300,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "MALARIAL PARASITE (SMEAR FOR MP)",
+    "department": "Hematology",
+    "cost": 100,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "MANTOUX TEST",
+    "department": "Pathology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "MYOGLOBIN",
+    "department": "Pathology",
+    "cost": 850,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "PCV (Packed Cell Volume)",
+    "department": "Hematology",
+    "cost": 100,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SERUM PHOSPHORUS",
+    "department": "Biochemistry",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "PLATELET COUNT",
+    "department": "Hematology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "POST LUNCH BLOOD SUGAR",
+    "department": "Biochemistry",
+    "cost": 70,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SERUM POTASSIUM",
+    "department": "Biochemistry",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "URINE FOR PREGNANCY TEST",
+    "department": "Pathology",
+    "cost": 100,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "PROGESTERONE",
+    "department": "Endocrinology",
+    "cost": 800,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "PROLACTIN",
+    "department": "Endocrinology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "PT",
+    "department": "Pathology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "RA FACTOR",
+    "department": "Pathology",
+    "cost": 300,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "RBS",
+    "department": "Pathology",
+    "cost": 50,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "REC (Reticulocyte Count)",
+    "department": "Pathology",
+    "cost": 150,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "GAMMA G.T.",
+    "department": "Pathology",
+    "cost": 250,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "S.G.O.T.",
+    "department": "Pathology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "S.G.P.T.",
+    "department": "Pathology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SEMEN ANALYSIS",
+    "department": "Pathology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SERUM CREATININE",
+    "department": "Biochemistry",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SERUM PROTEINS",
+    "department": "Biochemistry",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SMEAR FOR FUNGAL ELEMENTS",
+    "department": "Hematology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SERUM SODIUM",
+    "department": "Biochemistry",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SPUTUM FOR A.F.B",
+    "department": "Microbiology",
+    "cost": 400,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SPUTUM FOR MALIGNANT CELLS",
+    "department": "Microbiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "STONE ANALYSIS",
+    "department": "Pathology",
+    "cost": 1000,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "STOOL EXAMINATION",
+    "department": "Pathology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "STOOL FOR OCCULT BLOOD",
+    "department": "Microbiology",
+    "cost": 150,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "T3",
+    "department": "Endocrinology",
+    "cost": 250,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "T4",
+    "department": "Endocrinology",
+    "cost": 250,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "TESTOSTERONE",
+    "department": "Endocrinology",
+    "cost": 750,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "THYROID PROFILE (T3 T4 & TSH)",
+    "department": "Endocrinology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "TOTAL CHOLESTEROL",
+    "department": "Biochemistry",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "TOTAL PROTEINS",
+    "department": "Biochemistry",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SERUM TRIGLYCERIDES",
+    "department": "Biochemistry",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ULTRA SOUND WHOLE ABDOMEN",
+    "department": "Radiology",
+    "cost": 600,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "TSH",
+    "department": "Endocrinology",
+    "cost": 300,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SERUM URIC ACID",
+    "department": "Biochemistry",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "URINARY PROTEIN 24 HRS",
+    "department": "Biochemistry",
+    "cost": 50,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "URINE FOR MICROALBUMIN",
+    "department": "Pathology",
+    "cost": 450,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "VDRL",
+    "department": "Immunology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "VITAMIN D3",
+    "department": "Pathology",
+    "cost": 650,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "WIDAL TEST WITH MP",
+    "department": "Immunology",
+    "cost": 400,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY CHEST PA",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY CHEST PA VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY CHEST AP VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY PELVIS",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY PNS",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY ABDOMEN ERRECT",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY BOTH HIP JOINT AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY CERVICAL SPINE AP & LATERAL",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY CERVICAL SPINE AP VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY CERVICAL SPINE LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY CHEST LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY COCCYX AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY COCCYX AP VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY COCCYX LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY DORSAL SPINE AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY DORSAL SPINE AP VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY DORSAL SPINE LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY IVP",
+    "department": "Radiology",
+    "cost": 2300,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY KUB",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT ANKLE AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT ANKLE AP VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT ANLKLE LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT ELBOW AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT ELBOW AP VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT ELBOW LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT FOREARM AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT HAND AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT HAND AP VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT HAND LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT HEEL LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT HUMEROUS AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT HUMEROUS AP VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT HUMEROUS LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT KNEE JOINT AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT KNEE JOINT AP VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT KNEE JOINT LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT LEG AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT LEG AP VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT LEG LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT MANDIABLE AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 400,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT MANDIABLE AP VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT MANDIABLE LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT SHOULDER AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 400,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT SHOULDER AP VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT SHOULDER AXIL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT SHOULDER LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT THIGH AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 400,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT THIGH AP VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT THIGH LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT WRIST AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT WRIST AP VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LEFT WRIST LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LUMBAR SPINE AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 400,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LUMBAR SPINE AP VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY LUMBAR SPINE LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT ANKLE AP  & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT ANKLE AP VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT ANKLE LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT ELBOW AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT ELBOW AP VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT ELBOW LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT FOREARM AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT HAND AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT HAND AP VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT HAND LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT HEEL LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT HIP JOINT AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 400,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT HIP JOINT AP VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT HIP JOINT LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT HUMEROUS AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT HUMEROUS AP VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT HUMEROUS LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT KNEE JOINT AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT KNEE JOINT AP VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT LEG AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT LEG AP VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT LEG LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT MANDIABLE AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 400,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT MANDIABLE AP VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT MANDIABLE LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT SHOULDER AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 400,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT SHOULDER AP VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT SHOULDER AXIL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT SHOULDER LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT THIGH AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT THIGH AP VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT THIGH LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT WRIST AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT WRIST AP VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY RIGHT WRIST LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY SACRAM AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY SACRAM AP VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY SACRAM LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY SKULL AP & LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY SKULL AP VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY SKULL LATERAL VIEW",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ULTRA SOUND THYROID",
+    "department": "Radiology",
+    "cost": 650,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ULTRA SOUND SCROTUM",
+    "department": "Radiology",
+    "cost": 700,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ULTRA SOUND PELVIS",
+    "department": "Radiology",
+    "cost": 600,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ULTRA SOUND NECK",
+    "department": "Radiology",
+    "cost": 650,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ULTRA SOUND KUB",
+    "department": "Radiology",
+    "cost": 600,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ULTRA SOUND BREAST - SINGLE",
+    "department": "Radiology",
+    "cost": 600,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ULTRA SOUND BREAST - BOTH",
+    "department": "Radiology",
+    "cost": 900,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ULTRA SOUND ANTENATAL (OBSTERTIC)",
+    "department": "Radiology",
+    "cost": 600,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ULTRASOUND TIFFA SCAN",
+    "department": "Radiology",
+    "cost": 800,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ULTRASOUND FOLLICULAR STUDY",
+    "department": "Radiology",
+    "cost": 1000,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ULTRASOUND TRANS VAGINAL SCAN(Ist TRIMESTER) REPORT",
+    "department": "Radiology",
+    "cost": 700,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ULTRASOUND INTERVAL GROWTH (IIIrd TRIMESTER)-BPP",
+    "department": "Radiology",
+    "cost": 1000,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SPUTUM FOR GRAM STAIN",
+    "department": "Microbiology",
+    "cost": 300,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "URINE FOR KETONE BODIES",
+    "department": "Pathology",
+    "cost": 150,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "STOOL FOR REDUCING SUBSTANCE",
+    "department": "Microbiology",
+    "cost": 100,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY IOPA",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "TB IGG IGM",
+    "department": "Pathology",
+    "cost": 1100,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "X-RAY BOTH  KNEE JOINT AP",
+    "department": "Radiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SERUM CHOLESTROL",
+    "department": "Biochemistry",
+    "cost": 200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "KETON BODIES",
+    "department": "Pathology",
+    "cost": 100,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SERUM LIPASE",
+    "department": "Biochemistry",
+    "cost": 400,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "2D ECHO & COLOUR DOPPLER",
+    "department": "Radiology",
+    "cost": 1500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SERUM MAGNESIUM",
+    "department": "Biochemistry",
+    "cost": 250,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "COOMBS INDIRECT",
+    "department": "Pathology",
+    "cost": 450,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "FSH,LH,PROLACTIN",
+    "department": "Endocrinology",
+    "cost": 1500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SERUM ELECTROLYTES",
+    "department": "Biochemistry",
+    "cost": 700,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "HIV WITH BLOOD GROUP",
+    "department": "Biochemistry",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "URINE  NORMAL",
+    "department": "Pathology",
+    "cost": 100,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "VITAMIN B-12",
+    "department": "Pathology",
+    "cost": 1200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "CREATININE KINASE",
+    "department": "Biochemistry",
+    "cost": 150,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "RUBELLA  IgG.",
+    "department": "Pathology",
+    "cost": 0,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "RUBELLA VIRUS  - IgG",
+    "department": "Pathology",
+    "cost": 0,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "CHIKUNGUNYA",
+    "department": "Immunology",
+    "cost": 800,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "WIDAL TEST WITH MP,BG,BILIRUBIN,CRP,RBS",
+    "department": "Biochemistry",
+    "cost": 950,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "WIDAL TEST WITH MP,PC,RBS",
+    "department": "Immunology",
+    "cost": 350,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "WIDAL TEST",
+    "department": "Immunology",
+    "cost": 150,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "LH TEST",
+    "department": "Endocrinology",
+    "cost": 300,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ULTRASOUND SCAN OF ABDOMEN ( MALE )",
+    "department": "Radiology",
+    "cost": 100,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "ANTI HEPATITIS A VIRUS - IGM",
+    "department": "Pathology",
+    "cost": 120,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "RFT",
+    "department": "Pathology",
+    "cost": 600,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "TROP I",
+    "department": "Pathology",
+    "cost": 1500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "TROP T",
+    "department": "Pathology",
+    "cost": 1500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SERUM COLONOSTRASE",
+    "department": "Biochemistry",
+    "cost": 1200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "vcvcvvcvcvcvc",
+    "department": "Pathology",
+    "cost": 100,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "Anti Phospolipid Anti bodies  IgG & IgM",
+    "department": "Pathology",
+    "cost": 1300,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "Anti Mullerian Harmone (AMH)",
+    "department": "Pathology",
+    "cost": 2000,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SERUM IgE",
+    "department": "Biochemistry",
+    "cost": 1000,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "VITAMIN - D",
+    "department": "Pathology",
+    "cost": 1,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "PT INR",
+    "department": "Pathology",
+    "cost": 300,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "TORCH TEST",
+    "department": "Immunology",
+    "cost": 2500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "HS1 IgG IgM",
+    "department": "Pathology",
+    "cost": 600,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SPUTUM CULTURE & SENSIVITY",
+    "department": "Microbiology",
+    "cost": 500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "D-DIMER",
+    "department": "Pathology",
+    "cost": 1500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "HOMOCYSTINE",
+    "department": "Pathology",
+    "cost": 1000,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "PERIPHERAL SMEAR",
+    "department": "Hematology",
+    "cost": 250,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "IRON PROFILE",
+    "department": "Pathology",
+    "cost": 1400,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "LDH",
+    "department": "Pathology",
+    "cost": 600,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SERUM INSULIN",
+    "department": "Biochemistry",
+    "cost": 700,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "C-PEPTIDE",
+    "department": "Pathology",
+    "cost": 900,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "BLOOD  HCG",
+    "department": "Biochemistry",
+    "cost": 1200,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SERUM PROCALSOTONIN",
+    "department": "Biochemistry",
+    "cost": 2500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "BLOOD KETONES",
+    "department": "Biochemistry",
+    "cost": 400,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "SERUM HAPTO GLOBIN",
+    "department": "Biochemistry",
+    "cost": 1800,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "CULTURE & SENSIVITY",
+    "department": "Microbiology",
+    "cost": 400,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "BLOOD CULTURE & SENSIVITY",
+    "department": "Microbiology",
+    "cost": 1500,
+    "description": "",
+    "isActive": true
+  },
+  {
+    "testName": "serum igm",
+    "department": "Pathology",
+    "cost": 2000,
+    "description": "",
+    "isActive": true
+  }
+]
