@@ -336,20 +336,6 @@ export default function LabReport() {
 
             results.forEach((testResult, index) => {
               if (testResult.value && testResult.value.trim() !== "") {
-                // Add Differential Count heading before first differential test
-                const differentialTests = ["NEUTROPHILS", "LYMPHOCYTES", "EOSINOPHILS", "MONOCYTES", "BASOPHILS"];
-                if (differentialTests.includes(testResult.testName) && 
-                    !results.slice(0, index).some(result => differentialTests.includes(result.testName))) {
-                  // This is the first differential test, add heading at Y = 175
-                  yPos = 175 - 2; // Set yPos so that when we add +2 below, heading appears at Y = 175
-                  doc.setFontSize(10);
-                  doc.setFont("helvetica", "bold");
-                  doc.text("DIFFERENTIAL COUNT", 20, yPos + 2);
-                  yPos += 8; // Space after heading
-                  doc.setFontSize(9);
-                  doc.setFont("helvetica", "normal");
-                }
-                
                 // Test name
                 doc.setFont("helvetica", "normal");
                 doc.text(testResult.testName || "Unknown Test", 20, yPos + 2);
