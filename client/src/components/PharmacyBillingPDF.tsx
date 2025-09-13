@@ -270,13 +270,6 @@ export function generatePharmacyBillingPDF(data: PharmacyBillingData) {
   pdf.setFont('helvetica', 'normal');
   pdf.text('** GET WELL SOON **', margin, yPos);
   
-  // Add professional footer with timestamp
-  yPos += 20;
-  pdf.setFontSize(8);
-  pdf.setFont('helvetica', 'italic');
-  const timestamp = new Date().toLocaleString('en-IN');
-  const systemName = data.hospitalSettings?.hospitalName || 'NAKSHATRA HOSPITAL';
-  pdf.text(`Generated on: ${timestamp} | ${systemName} Management System`, margin, yPos);
   
   // Save the PDF
   const fileName = `pharmacy_bill_${data.invoiceNumber}.pdf`;

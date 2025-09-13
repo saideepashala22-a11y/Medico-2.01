@@ -214,15 +214,6 @@ export function ConsultationCardModal({
       pdf.setTextColor(80, 80, 80);
       pdf.text("Date: __________  Time: _______", rightBoxX + 4, footerY + 15);
 
-      // 5. BOTTOM FOOTER TEXT
-      pdf.setFontSize(6);
-      pdf.setFont("helvetica", "italic");
-      pdf.setTextColor(120, 120, 120);
-      const hospitalName = hospitalSettings.name || "NAKSHATRA HOSPITAL";
-      const generatedText = `Generated on ${new Date().toLocaleDateString("en-IN")} | ${hospitalName}`;
-      pdf.text(generatedText, pageWidth / 2, pageHeight - 5, {
-        align: "center",
-      });
 
       // Save the PDF
       const hospitalNameForFile = (hospitalSettings.name || "Nakshatra Hospital").replace(/\s+/g, "_");

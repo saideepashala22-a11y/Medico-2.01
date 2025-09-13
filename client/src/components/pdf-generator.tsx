@@ -39,8 +39,6 @@ export function generateLabReportPDF(patient: Patient, labTest: LabTest & { resu
     doc.text(labTest.doctorNotes, 20, yPos + 20, { maxWidth: 170 });
   }
   
-  // Footer
-  doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 280);
   
   doc.save(`${patient.name}_lab_report.pdf`);
 }
@@ -141,7 +139,6 @@ export function generateDischargeSummaryPDF(patient: Patient, summary: Discharge
   doc.text(summary.attendingPhysician, 20, 260);
   doc.text('Digital Signature', 20, 270);
   
-  doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 120, 270);
   
   doc.save(`${patient.name}_discharge_summary.pdf`);
 }
