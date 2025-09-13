@@ -316,7 +316,7 @@ export default function LabReport() {
       doc.text("UNIT", 120, yPos + 3);
       doc.text("REFERENCE RANGE", 140, yPos + 3);
 
-      yPos += 3; // Space after headers
+      yPos += 5; // Space after headers
 
       // Test Results Data
       doc.setFont("helvetica", "normal");
