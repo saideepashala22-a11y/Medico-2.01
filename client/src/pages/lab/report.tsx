@@ -451,7 +451,7 @@ export default function LabReport() {
       }
 
       // NOTE text, barcode and Lab Incharge positioned at bottom
-      const bottomMargin = 45; // Space from bottom for NOTE, barcode line and end text
+      const bottomMargin = 40; // Space from bottom for NOTE, barcode line and end text
       const noteY = pageHeight - bottomMargin;
       const barcodeLineY = pageHeight - 30; // Barcode just below NOTE
       
