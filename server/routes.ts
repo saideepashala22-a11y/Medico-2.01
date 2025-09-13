@@ -1133,14 +1133,14 @@ ${context || 'Nakshatra Hospital HMS assistance'}`;
       // Map form fields to database fields
       const { name, address, phone, email, website, registrationNumber } = req.body;
       
-      // Create clean mapped data - only include defined values
+      // Create clean mapped data - include all values (including empty strings)
       const mappedData: any = {};
-      if (name) mappedData.hospitalName = name;
-      if (address) mappedData.address = address;
-      if (phone) mappedData.phone = phone;
-      if (email) mappedData.email = email;
+      if (name !== undefined) mappedData.hospitalName = name;
+      if (address !== undefined) mappedData.address = address;
+      if (phone !== undefined) mappedData.phone = phone;
+      if (email !== undefined) mappedData.email = email;
       if (website !== undefined) mappedData.hospitalSubtitle = website;
-      if (registrationNumber) mappedData.accreditation = registrationNumber;
+      if (registrationNumber !== undefined) mappedData.accreditation = registrationNumber;
       
       const updates = insertHospitalSettingsSchema.partial().parse(mappedData);
       const settings = await storage.updateHospitalSettings(updates);
