@@ -417,15 +417,22 @@ export default function LabReport() {
                   // Split gender-specific ranges (male first, female second)
                   const [maleRange, femaleRange] = normalRange.split("|");
                   doc.text(maleRange.trim(), 140, yPos + 2);
-                  doc.text(femaleRange.trim(), 140, yPos + 6);
-                  yPos += 6; // Extra space for two-line reference
+                  
+                  // Special spacing for Total R.B.C COUNT female range
+                  if (testResult.testName === "Total R.B.C COUNT") {
+                    doc.text(femaleRange.trim(), 140, yPos + 4); // Female range at Y = 118
+                    yPos += 4; // Reduced extra space for Total R.B.C COUNT
+                  } else {
+                    doc.text(femaleRange.trim(), 140, yPos + 6);
+                    yPos += 6; // Extra space for two-line reference
+                  }
                 } else {
                   doc.text(normalRange, 140, yPos + 2);
                 }
 
-                // Special spacing for Total R.B.C COUNT to position at Y = 112
+                // Special spacing for Total R.B.C COUNT to position at Y = 116
                 if (testResult.testName === "HAEMOGLOBIN") {
-                  yPos -= 1; // Adjust spacing after HAEMOGLOBIN to position Total R.B.C COUNT at Y = 112
+                  yPos += 3; // Adjust spacing after HAEMOGLOBIN to position Total R.B.C COUNT at Y = 116
                 } else {
                   yPos += 12; // Normal spacing between other rows
                 }
