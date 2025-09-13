@@ -14,7 +14,23 @@ import {
   Stethoscope,
 } from "lucide-react";
 import jsPDF from "jspdf";
+import JsBarcode from 'jsbarcode';
 import { ThemeToggle } from "@/components/ThemeToggle";
+
+// Helper function to generate barcode as base64 image
+function generateBarcodeImage(text: string): string {
+  const canvas = document.createElement('canvas');
+  JsBarcode(canvas, text, {
+    format: "CODE128",
+    width: 1.5,
+    height: 25, // Small height for lab report
+    displayValue: false, // Remove text display
+    margin: 0,
+    background: "#ffffff",
+    lineColor: "#000000"
+  });
+  return canvas.toDataURL('image/png');
+}
 
 const testNames = {
   cbc: "Complete Blood Count (CBC)",
@@ -420,8 +436,21 @@ export default function LabReport() {
         yPos += 30;
       }
 
-      // Quality Assurance Section (after all test results)
-      yPos += 20;
+      // Check if we need a new page for footer section
+      yPos += 40;
+      console.log(
+        "🔍 Position before footer:",
+        yPos,
+        "Page height:",
+        pageHeight,
+      );
+
+      if (yPos > pageHeight - 80) {
+        doc.addPage();
+        yPos = 30; // Start from top of new page
+      }
+
+      // NOTE text (just above End of Report)
       doc.setFontSize(9);
       doc.setFont("helvetica", "italic");
       doc.text(
@@ -430,27 +459,29 @@ export default function LabReport() {
         yPos,
       );
 
-      // Lab Technician Signature Section (at the very end after all tests)
-      yPos += 25;
-      console.log(
-        "🔍 Position before signature:",
-        yPos,
-        "Page height:",
-        pageHeight,
-      );
-
-      // Check if we need a new page for signature
-      if (yPos > pageHeight - 100) {
-        doc.addPage();
-        yPos = 30; // Start from top of new page
+      // Barcode and Lab Incharge on same line
+      yPos += 20;
+      
+      // Generate barcode for lab test ID
+      const barcodeData = labTest.id.slice(-8); // Use last 8 characters of test ID
+      try {
+        const barcodeImage = generateBarcodeImage(barcodeData);
+        // Add small barcode on left side
+        const barcodeWidth = 60;
+        const barcodeHeight = 20;
+        doc.addImage(barcodeImage, 'PNG', 20, yPos, barcodeWidth, barcodeHeight);
+      } catch (error) {
+        console.warn('Failed to add barcode:', error);
+        // Fallback: Add simple text
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "normal");
+        doc.text(`ID: ${barcodeData}`, 20, yPos + 10);
       }
 
-      yPos += 25;
-
-      // Simple signature block with just Lab Incharge
+      // Lab Incharge on right side (opposite to barcode)
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
-      doc.text("Lab Incharge", 140, yPos);
+      doc.text("Lab Incharge", pageWidth - 40, yPos + 12, { align: "right" });
 
       // Report Footer (at the very end)
       yPos += 35;
