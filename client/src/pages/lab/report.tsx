@@ -439,7 +439,7 @@ export default function LabReport() {
                 } else if (testResult.testName === "Total R.B.C COUNT") {
                   yPos += 4; // Spacing after Total R.B.C COUNT to position P.C.V at Y = 128
                 } else if (testResult.testName === "P.C.V") {
-                  yPos += 0; // No extra spacing after P.C.V to position MCV at Y = 135
+                  yPos += 3; // Spacing after P.C.V to position MCV at Y = 138
                 } else {
                   yPos += 12; // Normal spacing between other rows
                 }
