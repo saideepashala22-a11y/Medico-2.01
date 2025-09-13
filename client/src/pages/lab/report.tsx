@@ -442,6 +442,8 @@ export default function LabReport() {
                   yPos += 5; // Spacing after P.C.V to position MCV at Y = 140
                 } else if (testResult.testName === "MCV") {
                   yPos += 10; // Spacing after MCV to position MCH at Y = 150
+                } else if (testResult.testName === "MCH") {
+                  yPos += 5; // Spacing after MCH to position MCHC at Y = 155
                 } else {
                   yPos += 12; // Normal spacing between other rows
                 }
