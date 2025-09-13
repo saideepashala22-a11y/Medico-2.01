@@ -435,7 +435,7 @@ export default function LabReport() {
         yPos + 7,
       );
 
-      // Add separation line before signature
+      // Lab Technician Signature Section (at the very end after all tests)
       yPos += 25;
       console.log(
         "🔍 Position before signature:",
@@ -450,10 +450,6 @@ export default function LabReport() {
         yPos = 30; // Start from top of new page
       }
 
-      doc.setLineWidth(0.3);
-      doc.line(15, yPos, pageWidth - 15, yPos);
-
-      // Lab Technician Signature Section (at the very end after all tests)
       yPos += 25;
 
       // Simple signature block with just Lab Incharge
