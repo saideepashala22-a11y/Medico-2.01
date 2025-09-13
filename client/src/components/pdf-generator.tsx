@@ -88,12 +88,12 @@ export function generatePrescriptionPDF(patient: Patient, prescription: Prescrip
   doc.save(`${patient.name}_prescription.pdf`);
 }
 
-export function generateDischargeSummaryPDF(patient: Patient, summary: DischargeSummary) {
+export function generateDischargeSummaryPDF(patient: Patient, summary: DischargeSummary, hospitalSettings?: any) {
   const doc = new jsPDF();
   
   // Header
   doc.setFontSize(20);
-  doc.text('Hospital Management System', 105, 20, { align: 'center' });
+  doc.text(hospitalSettings?.hospitalName || 'Hospital Management System', 105, 20, { align: 'center' });
   doc.setFontSize(16);
   doc.text('DISCHARGE SUMMARY', 105, 30, { align: 'center' });
   

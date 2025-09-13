@@ -154,6 +154,11 @@ export default function SurgicalCaseSheets() {
     const caseSheetNumber = `SCS${patientIdShort}-${String(Math.floor(Math.random() * 99) + 1).padStart(2, '0')}`;
     const currentDate = new Date().toLocaleDateString('en-GB');
     
+    // Use dynamic hospital settings
+    const hospitalName = (hospitalSettings as any)?.hospitalName || (hospitalSettings as any)?.name || 'NAKSHATRA HOSPITAL';
+    const hospitalAddress = (hospitalSettings as any)?.address || 'Opp. to SBI Bank, Thurkappally (V&M), Yadadri Bhongiri District, T.S.';
+    const hospitalPhone = (hospitalSettings as any)?.phone || '7093939205';
+    
     const htmlContent = `
 <!DOCTYPE html>
 <html lang="en">
@@ -209,9 +214,9 @@ export default function SurgicalCaseSheets() {
   <div class="page">
     <div class="inner">
       <div class="hospital-header">
-        <h1 class="hospital-name">NAKSHATRA HOSPITAL</h1>
-        <div class="hospital-address">Opp. to SBI Bank, Thurkappally (V&M), Yadadri Bhongiri District, T.S.</div>
-        <div class="hospital-phone">Cell: 7093939205</div>
+        <h1 class="hospital-name">${hospitalName}</h1>
+        <div class="hospital-address">${hospitalAddress}</div>
+        <div class="hospital-phone">Cell: ${hospitalPhone}</div>
       </div>
 
       <h2 class="title">SURGICAL CASE SHEET</h2>

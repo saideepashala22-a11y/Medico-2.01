@@ -51,6 +51,12 @@ export default function Discharge() {
     queryKey: ['/api/discharge-summaries/recent'],
   });
 
+  // Fetch hospital settings for PDF generation
+  const { data: hospitalSettings } = useQuery({
+    queryKey: ['/api/hospital-settings'],
+    staleTime: 0, // Always fetch fresh data for PDFs
+  });
+
   const createDischargeMutation = useMutation({
     mutationFn: async (data: any) => {
       const response = await apiRequest('POST', '/api/discharge-summaries', data);
@@ -162,7 +168,7 @@ export default function Discharge() {
       generatedDate: new Date().toISOString(),
     };
 
-    generateDischargeSummaryPDF(selectedPatient, summaryForPDF as any);
+    generateDischargeSummaryPDF(selectedPatient, summaryForPDF as any, hospitalSettings);
   };
 
   const getLengthOfStay = () => {
