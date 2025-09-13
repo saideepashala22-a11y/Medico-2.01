@@ -459,8 +459,9 @@ export default function LabReport() {
         yPos,
       );
 
-      // Barcode and Lab Incharge on same line
-      yPos += 20;
+      // Barcode and Lab Incharge positioned just above "End of Report"
+      const bottomMargin = 30; // Space from bottom for both barcode line and end text
+      const barcodeLineY = pageHeight - bottomMargin;
       
       // Generate barcode for lab test ID
       const barcodeData = labTest.id.slice(-8); // Use last 8 characters of test ID
@@ -469,21 +470,21 @@ export default function LabReport() {
         // Add small barcode on left side
         const barcodeWidth = 60;
         const barcodeHeight = 10; // Reduced by 50% from 20 to 10
-        doc.addImage(barcodeImage, 'PNG', 20, yPos, barcodeWidth, barcodeHeight);
+        doc.addImage(barcodeImage, 'PNG', 20, barcodeLineY, barcodeWidth, barcodeHeight);
       } catch (error) {
         console.warn('Failed to add barcode:', error);
         // Fallback: Add simple text
         doc.setFontSize(8);
         doc.setFont("helvetica", "normal");
-        doc.text(`ID: ${barcodeData}`, 20, yPos + 10);
+        doc.text(`ID: ${barcodeData}`, 20, barcodeLineY + 5);
       }
 
-      // Lab Incharge on right side (opposite to barcode)
+      // Lab Incharge on right side (same horizontal line as barcode)
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
-      doc.text("Lab Incharge", pageWidth - 40, yPos + 12, { align: "right" });
+      doc.text("Lab Incharge", pageWidth - 40, barcodeLineY + 6, { align: "right" });
 
-      // Report Footer (at the bottom of the page)
+      // Report Footer (at the very bottom of the page)
       doc.setFontSize(8);
       doc.setFont("helvetica", "italic");
       doc.text("*** End of Report ***", pageWidth / 2, pageHeight - 10, {
