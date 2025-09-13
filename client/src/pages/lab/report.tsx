@@ -300,7 +300,7 @@ export default function LabReport() {
       doc.text(`Referring Doctor: ${referringDoctor}`, 120, boxY + 36);
 
       // Test Results Table Header
-      let yPos = boxY + 50;
+      let yPos = boxY + 48;
       doc.setFontSize(11);
       doc.setFont("helvetica", "bold");
       doc.text("COMPLETE BLOOD PICTURE", 20, yPos);
