@@ -438,6 +438,8 @@ export default function LabReport() {
                   yPos += 5; // Adjust spacing after HAEMOGLOBIN to position Total R.B.C COUNT at Y = 118
                 } else if (testResult.testName === "Total R.B.C COUNT") {
                   yPos += 4; // Spacing after Total R.B.C COUNT to position P.C.V at Y = 128
+                } else if (testResult.testName === "P.C.V") {
+                  yPos += 0; // No extra spacing after P.C.V to position MCV at Y = 135
                 } else {
                   yPos += 12; // Normal spacing between other rows
                 }
