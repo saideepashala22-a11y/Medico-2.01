@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
-import { Link, useParams } from "wouter";
+import { Link, useParams, useLocation } from "wouter";
 import {
   ArrowLeft,
   Download,
@@ -14,6 +14,7 @@ import {
   Stethoscope,
 } from "lucide-react";
 import jsPDF from "jspdf";
+import { useEffect } from "react";
 import JsBarcode from 'jsbarcode';
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -42,10 +43,19 @@ const testNames = {
 };
 
 export default function LabReport() {
-  const { user } = useAuth();
+  const { user, isLoading: authLoading, token } = useAuth();
   const { toast } = useToast();
   const params = useParams();
-  const labTestId = params.labTestId;
+  const labTestId = params.labTestId || params.testId || params.id;
+  const [, navigate] = useLocation();
+
+
+  // Redirect to login if not authenticated (via useEffect to avoid blocking queries)
+  useEffect(() => {
+    if (!authLoading && !token) {
+      navigate('/login');
+    }
+  }, [authLoading, token, navigate]);
 
   // Fetch current doctor for dynamic referral
   const { data: currentDoctor } = useQuery<{
@@ -55,6 +65,7 @@ export default function LabReport() {
     specialization?: string;
   }>({
     queryKey: ["/api/current-doctor"],
+    enabled: !authLoading,
     staleTime: 30 * 1000, // Cache for 30 seconds
   });
 
@@ -82,7 +93,7 @@ export default function LabReport() {
     };
   }>({
     queryKey: ["/api/lab-tests", labTestId],
-    enabled: !!labTestId,
+    enabled: !!labTestId && !authLoading,
   });
 
   // Fetch hospital settings for PDF generation
@@ -95,6 +106,7 @@ export default function LabReport() {
     accreditation?: string;
   }>({
     queryKey: ["/api/hospital-settings"],
+    enabled: !authLoading,
     staleTime: 0, // Always fetch fresh data for PDFs
   });
 
@@ -322,19 +334,19 @@ export default function LabReport() {
       doc.setFont("helvetica", "normal");
 
       try {
-        // labTest.results is already an array of objects, no need to parse
-        if (
-          labTest.results &&
-          Array.isArray(labTest.results) &&
-          labTest.results.length > 0
-        ) {
-          const results = labTest.results;
+        // Normalize results - handle both string and array formats
+        const resultsArray = Array.isArray(labTest.results) 
+          ? labTest.results 
+          : JSON.parse(labTest.results || '[]');
+        
+        if (resultsArray && resultsArray.length > 0) {
+          const results = resultsArray;
 
           if (results.length > 0) {
             doc.setFont("helvetica", "normal");
             doc.setFontSize(9);
 
-            results.forEach((testResult, index) => {
+            results.forEach((testResult: any, index: number) => {
               if (testResult.value && testResult.value.trim() !== "") {
                 // Test name
                 doc.setFont("helvetica", "normal");
