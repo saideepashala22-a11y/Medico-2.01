@@ -423,7 +423,7 @@ export default function LabReport() {
                     doc.text(femaleRange.trim(), 140, yPos + 6); // Female range at Y = 122
                     yPos += 6; // Standard extra space for Total R.B.C COUNT
                   } else if (testResult.testName === "P.C.V") {
-                    doc.text(femaleRange.trim(), 140, yPos + 4); // Female range at Y = 127
+                    doc.text(femaleRange.trim(), 140, yPos + 4); // Female range at Y = 130
                     yPos += 4; // Reduced extra space for P.C.V
                   } else {
                     doc.text(femaleRange.trim(), 140, yPos + 6);
@@ -437,7 +437,7 @@ export default function LabReport() {
                 if (testResult.testName === "HAEMOGLOBIN") {
                   yPos += 5; // Adjust spacing after HAEMOGLOBIN to position Total R.B.C COUNT at Y = 118
                 } else if (testResult.testName === "Total R.B.C COUNT") {
-                  yPos += 1; // Reduced spacing after Total R.B.C COUNT to position P.C.V at Y = 125
+                  yPos += 4; // Spacing after Total R.B.C COUNT to position P.C.V at Y = 128
                 } else {
                   yPos += 12; // Normal spacing between other rows
                 }
