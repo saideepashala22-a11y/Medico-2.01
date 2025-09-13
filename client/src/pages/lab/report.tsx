@@ -464,7 +464,7 @@ export default function LabReport() {
       yPos += 12;
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
-      doc.text("Lab Technician", 140, yPos);
+      doc.text("Lab Incharge", 140, yPos);
 
       // Professional signature line (properly positioned)
       yPos += 15;
