@@ -450,18 +450,19 @@ export default function LabReport() {
         yPos = 30; // Start from top of new page
       }
 
-      // NOTE text (just above End of Report)
+      // NOTE text, barcode and Lab Incharge positioned at bottom
+      const bottomMargin = 45; // Space from bottom for NOTE, barcode line and end text
+      const noteY = pageHeight - bottomMargin;
+      const barcodeLineY = pageHeight - 30; // Barcode just below NOTE
+      
+      // NOTE text (just above barcode)
       doc.setFontSize(9);
       doc.setFont("helvetica", "italic");
       doc.text(
         "NOTE : Please Correlate Clinically if necessary kindly discuss",
         20,
-        yPos,
+        noteY,
       );
-
-      // Barcode and Lab Incharge positioned just above "End of Report"
-      const bottomMargin = 30; // Space from bottom for both barcode line and end text
-      const barcodeLineY = pageHeight - bottomMargin;
       
       // Generate barcode for lab test ID
       const barcodeData = labTest.id.slice(-8); // Use last 8 characters of test ID
