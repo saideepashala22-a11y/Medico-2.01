@@ -423,8 +423,8 @@ export default function LabReport() {
                     doc.text(femaleRange.trim(), 140, yPos + 6); // Female range at Y = 122
                     yPos += 6; // Standard extra space for Total R.B.C COUNT
                   } else if (testResult.testName === "P.C.V") {
-                    doc.text(femaleRange.trim(), 140, yPos + 4); // Female range at Y = 130
-                    yPos += 4; // Reduced extra space for P.C.V
+                    doc.text(femaleRange.trim(), 140, yPos + 7); // Female range at Y = 133
+                    yPos += 7; // Adjusted extra space for P.C.V
                   } else {
                     doc.text(femaleRange.trim(), 140, yPos + 6);
                     yPos += 6; // Extra space for two-line reference
