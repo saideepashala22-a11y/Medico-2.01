@@ -232,58 +232,61 @@ export default function LabReport() {
         currentY += 6;
       }
 
-      // Horizontal line under header
+      // Horizontal line under header (dynamic position)
+      const headerEndY = currentY + 3;
       doc.setLineWidth(0.5);
-      doc.line(15, 45, pageWidth - 15, 45);
+      doc.line(15, headerEndY, pageWidth - 15, headerEndY);
 
       // Document Title
       doc.setFontSize(14);
       doc.setFont("helvetica", "bold");
-      doc.text("LABORATORY INVESTIGATION REPORT", pageWidth / 2, 51, {
+      const titleY = headerEndY + 8;
+      doc.text("LABORATORY INVESTIGATION REPORT", pageWidth / 2, titleY, {
         align: "center",
       });
 
       // Patient Information Box
       doc.setLineWidth(0.3);
-      doc.rect(15, 55, pageWidth - 30, 40);
+      const boxY = titleY + 6;
+      doc.rect(15, boxY, pageWidth - 30, 40);
 
       doc.setFontSize(11);
       doc.setFont("helvetica", "bold");
-      doc.text("PATIENT DETAILS", 20, 62);
+      doc.text("PATIENT DETAILS", 20, boxY + 7);
 
       doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
-      doc.text(`Patient ID: ${labTest.patient.mruNumber || "N/A"}`, 20, 70);
-      doc.text(`Patient Name: ${labTest.patient.fullName || "N/A"}`, 20, 77);
+      doc.text(`Patient ID: ${labTest.patient.mruNumber || "N/A"}`, 20, boxY + 15);
+      doc.text(`Patient Name: ${labTest.patient.fullName || "N/A"}`, 20, boxY + 22);
       doc.text(
         `Age/Gender: ${labTest.patient.age || "N/A"} Years / ${labTest.patient.gender || "N/A"}`,
         20,
-        84,
+        boxY + 29,
       );
       if (labTest.patient.contactPhone) {
-        doc.text(`Contact: ${labTest.patient.contactPhone}`, 20, 91);
+        doc.text(`Contact: ${labTest.patient.contactPhone}`, 20, boxY + 36);
       }
 
       // Test Information (Right side of patient box)
       doc.setFont("helvetica", "bold");
-      doc.text("TEST DETAILS", 120, 62);
+      doc.text("TEST DETAILS", 120, boxY + 7);
 
       doc.setFont("helvetica", "normal");
       const testDate = new Date(labTest.createdAt);
       doc.text(
         `Collection Date: ${testDate.toLocaleDateString("en-IN")}`,
         120,
-        70,
+        boxY + 15,
       );
       doc.text(
         `Report Date: ${new Date().toLocaleDateString("en-IN")}`,
         120,
-        77,
+        boxY + 22,
       );
       doc.text(
         `Lab No: LAB-${labTest.id.substring(0, 8).toUpperCase()}`,
         120,
-        84,
+        boxY + 29,
       );
       // Use patient's referring doctor, or fall back to current selected doctor, or default
       const getReferringDoctor = () => {
@@ -299,10 +302,10 @@ export default function LabReport() {
         return "Dr. Consulting Physician";
       };
       const referringDoctor = getReferringDoctor();
-      doc.text(`Referring Doctor: ${referringDoctor}`, 120, 91);
+      doc.text(`Referring Doctor: ${referringDoctor}`, 120, boxY + 36);
 
       // Test Results Table Header
-      let yPos = 105;
+      let yPos = boxY + 50;
       doc.setFontSize(11);
       doc.setFont("helvetica", "bold");
       doc.text("COMPLETE BLOOD PICTURE", 20, yPos);
