@@ -194,6 +194,82 @@ export default function EnterResults() {
     return defaults[testName] || '';
   };
 
+  // Utility function to parse reference ranges and check if value is abnormal
+  const parseReferenceRange = (normalRange: string, gender?: string): { min?: number; max?: number; isAbnormal: boolean } => {
+    if (!normalRange || normalRange === 'Consult reference values' || normalRange === 'Morphological assessment' || 
+        normalRange === 'Functional assessment' || normalRange === 'Adequacy assessment' || normalRange === 'Collection method') {
+      return { isAbnormal: false };
+    }
+
+    let rangeToUse = normalRange;
+
+    // Handle gender-specific ranges like "(M) 13.5-18 gms%|(F) 11.5-16 gms%"
+    if (normalRange.includes('|') && gender) {
+      const ranges = normalRange.split('|');
+      const genderPrefix = gender.toLowerCase() === 'male' ? '(M)' : '(F)';
+      const matchingRange = ranges.find(range => range.trim().startsWith(genderPrefix));
+      if (matchingRange) {
+        rangeToUse = matchingRange.replace(/^\(M\)\s*|\(F\)\s*/, '').trim();
+      } else {
+        // Default to first range if gender doesn't match
+        rangeToUse = ranges[0].replace(/^\(M\)\s*|\(F\)\s*/, '').trim();
+      }
+    } else if (normalRange.includes('|')) {
+      // If no gender specified, use first range
+      rangeToUse = normalRange.split('|')[0].replace(/^\(M\)\s*|\(F\)\s*/, '').trim();
+    }
+
+    // Handle different range formats
+    let min: number | undefined;
+    let max: number | undefined;
+
+    // Pattern: "80 - 100 fL" or "13.5 - 18 gms%"
+    const dashRangeMatch = rangeToUse.match(/(\d+\.?\d*)\s*-\s*(\d+\.?\d*)/);
+    if (dashRangeMatch) {
+      min = parseFloat(dashRangeMatch[1]);
+      max = parseFloat(dashRangeMatch[2]);
+      return { min, max, isAbnormal: false };
+    }
+
+    // Pattern: "<140 mg/dL" or "<200"
+    const lessThanMatch = rangeToUse.match(/<\s*(\d+\.?\d*)/);
+    if (lessThanMatch) {
+      max = parseFloat(lessThanMatch[1]);
+      return { max, isAbnormal: false };
+    }
+
+    // Pattern: ">5.0" (rarely used but could exist)
+    const greaterThanMatch = rangeToUse.match(/>\s*(\d+\.?\d*)/);
+    if (greaterThanMatch) {
+      min = parseFloat(greaterThanMatch[1]);
+      return { min, isAbnormal: false };
+    }
+
+    // Pattern: "4000-11000/Cumm" (numbers with units)
+    const numberRangeMatch = rangeToUse.match(/(\d+)-(\d+)/);
+    if (numberRangeMatch) {
+      min = parseFloat(numberRangeMatch[1]);
+      max = parseFloat(numberRangeMatch[2]);
+      return { min, max, isAbnormal: false };
+    }
+
+    return { isAbnormal: false };
+  };
+
+  // Check if a value exceeds reference interval
+  const isValueAbnormal = (value: string, normalRange: string, gender?: string): boolean => {
+    // For text-based parameters, never abnormal
+    if (!value || isNaN(parseFloat(value))) return false;
+    
+    const numValue = parseFloat(value);
+    const { min, max } = parseReferenceRange(normalRange, gender);
+
+    if (min !== undefined && numValue < min) return true;
+    if (max !== undefined && numValue > max) return true;
+    
+    return false;
+  };
+
   // Determine result status based on value and normal range
   const determineStatus = (value: string, testName: string): 'normal' | 'high' | 'low' | 'critical' => {
     // For text-based parameters, always return normal
