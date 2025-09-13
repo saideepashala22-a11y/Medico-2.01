@@ -6,7 +6,7 @@ export function generateLabReportPDF(patient: Patient, labTest: LabTest & { resu
   
   // Header
   doc.setFontSize(20);
-  doc.text(hospitalSettings?.name || 'Hospital Management System', 105, 20, { align: 'center' });
+  doc.text(hospitalSettings?.hospitalName || hospitalSettings?.name || 'Hospital Management System', 105, 20, { align: 'center' });
   doc.setFontSize(16);
   doc.text('Laboratory Report', 105, 30, { align: 'center' });
   
@@ -50,7 +50,7 @@ export function generatePrescriptionPDF(patient: Patient, prescription: Prescrip
   
   // Header
   doc.setFontSize(20);
-  doc.text(hospitalSettings?.name || 'Hospital Management System', 105, 20, { align: 'center' });
+  doc.text(hospitalSettings?.hospitalName || hospitalSettings?.name || 'Hospital Management System', 105, 20, { align: 'center' });
   doc.setFontSize(16);
   doc.text('Pharmacy Bill', 105, 30, { align: 'center' });
   
@@ -93,7 +93,7 @@ export function generateDischargeSummaryPDF(patient: Patient, summary: Discharge
   
   // Header
   doc.setFontSize(20);
-  doc.text(hospitalSettings?.hospitalName || 'Hospital Management System', 105, 20, { align: 'center' });
+  doc.text(hospitalSettings?.hospitalName || hospitalSettings?.name || 'Hospital Management System', 105, 20, { align: 'center' });
   doc.setFontSize(16);
   doc.text('DISCHARGE SUMMARY', 105, 30, { align: 'center' });
   
