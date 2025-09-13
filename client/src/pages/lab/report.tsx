@@ -746,12 +746,21 @@ export default function LabReport() {
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                       {Object.entries(testResults).map(([key, value]) => {
                         if (!value) return null;
+                        
+                        // Check if this value is abnormal for conditional bold formatting
+                        const testResultItem = Array.isArray(labTest.results) 
+                          ? labTest.results.find((result: any) => result.testName === key)
+                          : null;
+                        const referenceRange = testResultItem?.normalRange || "Consult reference";
+                        const patientGender = labTest.patient?.gender;
+                        const valueIsAbnormal = isValueAbnormal(String(value), referenceRange, patientGender);
+                        
                         return (
                           <div key={key}>
                             <p className="text-sm font-medium text-gray-500 capitalize">
                               {key.replace(/([A-Z])/g, " $1")}
                             </p>
-                            <p className="text-lg font-semibold">
+                            <p className={`text-lg ${valueIsAbnormal ? 'font-bold text-red-600' : 'font-semibold'}`}>
                               {String(value)}
                             </p>
                           </div>
