@@ -444,6 +444,8 @@ export default function LabReport() {
                   yPos += 10; // Spacing after MCV to position MCH at Y = 150
                 } else if (testResult.testName === "MCH") {
                   yPos += 10; // Spacing after MCH to position MCHC at Y = 160
+                } else if (testResult.testName === "MCHC") {
+                  yPos += 10; // Spacing after MCHC to position W.B.C (TOTAL) at Y = 170
                 } else {
                   yPos += 12; // Normal spacing between other rows
                 }
