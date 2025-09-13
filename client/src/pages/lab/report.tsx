@@ -232,15 +232,10 @@ export default function LabReport() {
         currentY += 6;
       }
 
-      // Horizontal line under header (fixed position)
-      const headerEndY = 29;
-      doc.setLineWidth(0.5);
-      doc.line(15, headerEndY, pageWidth - 15, headerEndY);
-
       // Document Title
       doc.setFontSize(14);
       doc.setFont("helvetica", "bold");
-      const titleY = headerEndY + 8;
+      const titleY = 37;
       doc.text("LABORATORY INVESTIGATION REPORT", pageWidth / 2, titleY, {
         align: "center",
       });
