@@ -423,7 +423,12 @@ export default function LabReport() {
                   doc.text(normalRange, 140, yPos + 2);
                 }
 
-                yPos += 12; // Increased spacing between rows
+                // Special spacing for Total R.B.C COUNT to position at Y = 112
+                if (testResult.testName === "HAEMOGLOBIN") {
+                  yPos -= 1; // Adjust spacing after HAEMOGLOBIN to position Total R.B.C COUNT at Y = 112
+                } else {
+                  yPos += 12; // Normal spacing between other rows
+                }
               }
             });
           }
