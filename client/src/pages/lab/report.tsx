@@ -311,7 +311,7 @@ export default function LabReport() {
 
       doc.setFontSize(9);
       doc.setFont("helvetica", "bold");
-      doc.text("INVESTIGATION", 20, yPos + 6);
+      doc.text("INVESTIGATION", 20, yPos + 8);
       doc.text("VALUE", 90, yPos + 8);
       doc.text("UNIT", 120, yPos + 8);
       doc.text("REFERENCE RANGE", 140, yPos + 8);
