@@ -283,6 +283,9 @@
     .table-container {
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
+      /* Add visual scroll indicator */
+      scrollbar-width: thin;
+      scrollbar-color: hsl(var(--medical-primary)) transparent;
     }
     
     /* Better spacing for mobile */
@@ -295,6 +298,105 @@
       margin: 1rem;
       max-height: calc(100vh - 2rem);
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Mobile-friendly button spacing */
+    .button-group {
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    
+    /* Better mobile form spacing */
+    .form-field {
+      margin-bottom: 1.5rem;
+    }
+    
+    /* Mobile card padding optimization */
+    .mobile-card {
+      padding: 1rem;
+      border-radius: 0.75rem;
+    }
+    
+    /* Larger touch targets for mobile icons */
+    .mobile-icon {
+      min-height: 48px;
+      min-width: 48px;
+      padding: 8px;
+      border-radius: 8px;
+    }
+    
+    /* Mobile-optimized navigation */
+    .mobile-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      padding: 0.75rem;
+    }
+    
+    /* Improve mobile table cells */
+    .mobile-table-cell {
+      padding: 0.75rem 0.5rem;
+      font-size: 0.875rem;
+    }
+  }
+  
+  /* Advanced mobile keyboard optimizations */
+  @media (max-width: 768px) {
+    /* Prevent layout shifting on keyboard open */
+    .mobile-form {
+      padding-bottom: 200px;
+      min-height: 100vh;
+    }
+    
+    /* Better mobile input focus with subtle scale */
+    input:focus,
+    textarea:focus,
+    select:focus {
+      transform: scale(1.01);
+      transition: transform 0.15s ease-in-out;
+      box-shadow: 0 0 0 2px hsl(var(--medical-primary) / 0.2);
+    }
+    
+    /* Mobile-friendly form labels */
+    .mobile-form label {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    
+    /* Optimize mobile search inputs */
+    .mobile-search {
+      font-size: 16px !important; /* Prevent iOS zoom */
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+    }
+  }
+  
+  /* Touch gesture optimizations */
+  @media (max-width: 768px) {
+    /* Add swipe indicators for horizontal scrolling */
+    .swipe-container::after {
+      content: '← Swipe to see more →';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      font-size: 0.75rem;
+      color: hsl(var(--muted-foreground));
+      padding: 0.25rem 0.5rem;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 0.375rem;
+      pointer-events: none;
+    }
+    
+    /* Improve pull-to-refresh experience */
+    .mobile-scroll-container {
+      overscroll-behavior-y: contain;
       -webkit-overflow-scrolling: touch;
     }
   }
