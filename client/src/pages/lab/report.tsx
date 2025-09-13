@@ -242,7 +242,7 @@ export default function LabReport() {
 
       // Patient Information Box
       doc.setLineWidth(0.3);
-      const boxY = titleY + 6;
+      const boxY = 41;
       doc.rect(15, boxY, pageWidth - 30, 40);
 
       doc.setFontSize(11);
