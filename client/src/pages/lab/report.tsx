@@ -196,26 +196,41 @@ export default function LabReport() {
 
       doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
-      const subtitle =
-        hospitalSettings?.hospitalSubtitle ||
-        "Multi Specialty Hospital & Research Centre";
-      doc.text(subtitle, pageWidth / 2, 22, { align: "center" });
+      
+      let currentY = 22;
+      
+      // Only show subtitle if it exists
+      if (hospitalSettings?.hospitalSubtitle) {
+        doc.text(hospitalSettings.hospitalSubtitle, pageWidth / 2, currentY, { align: "center" });
+        currentY += 6;
+      }
 
-      const address =
-        hospitalSettings?.address ||
-        "123 Medical District, Healthcare City, State - 123456";
-      doc.text(address, pageWidth / 2, 28, { align: "center" });
+      // Only show address if it exists
+      if (hospitalSettings?.address) {
+        doc.text(hospitalSettings.address, pageWidth / 2, currentY, { align: "center" });
+        currentY += 6;
+      }
 
-      const phone = hospitalSettings?.phone || "+91-1234567890";
-      const email = hospitalSettings?.email || "info@nakshatrahospital.com";
-      doc.text(`Phone: ${phone} | Email: ${email}`, pageWidth / 2, 34, {
-        align: "center",
-      });
+      // Show phone and email only if they exist
+      const phone = hospitalSettings?.phone;
+      const email = hospitalSettings?.email;
+      
+      if (phone && email) {
+        doc.text(`Phone: ${phone} | Email: ${email}`, pageWidth / 2, currentY, { align: "center" });
+        currentY += 6;
+      } else if (phone) {
+        doc.text(`Phone: ${phone}`, pageWidth / 2, currentY, { align: "center" });
+        currentY += 6;
+      } else if (email) {
+        doc.text(`Email: ${email}`, pageWidth / 2, currentY, { align: "center" });
+        currentY += 6;
+      }
 
-      const accreditation =
-        hospitalSettings?.accreditation ||
-        "NABL Accredited Laboratory | ISO 15189:2012 Certified";
-      doc.text(accreditation, pageWidth / 2, 40, { align: "center" });
+      // Only show accreditation if it exists
+      if (hospitalSettings?.accreditation) {
+        doc.text(hospitalSettings.accreditation, pageWidth / 2, currentY, { align: "center" });
+        currentY += 6;
+      }
 
       // Horizontal line under header
       doc.setLineWidth(0.5);
