@@ -456,12 +456,7 @@ export default function LabReport() {
       // Lab Technician Signature Section (at the very end after all tests)
       yPos += 25;
 
-      // Enhanced signature block - positioned on the right side but visible
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(10);
-      doc.text("AUTHORIZED SIGNATORY", 130, yPos);
-
-      yPos += 12;
+      // Simple signature block with just Lab Incharge
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
       doc.text("Lab Incharge", 140, yPos);
@@ -470,16 +465,6 @@ export default function LabReport() {
       yPos += 15;
       doc.setLineWidth(0.5);
       doc.line(120, yPos, 180, yPos);
-
-      // Credentials and title
-      yPos += 8;
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(8);
-      doc.text("Medical Laboratory Technologist", 125, yPos);
-      yPos += 6;
-      const signatureHospitalName =
-        hospitalSettings?.hospitalName || "NAKSHATRA HOSPITAL";
-      doc.text(signatureHospitalName, 135, yPos);
 
       // Report Footer (at the very end)
       yPos += 35;
