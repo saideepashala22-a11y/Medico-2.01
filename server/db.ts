@@ -7,29 +7,61 @@ import * as schema from "@shared/schema";
 
 // Configure for different deployment environments
 function getDatabaseUrl(): string {
-  // Check for explicit DATABASE_URL first
+  // Log available environment variables for debugging (in production)
+  if (process.env.NODE_ENV === 'production') {
+    console.log('🔍 Available environment variables:', {
+      DATABASE_URL: !!process.env.DATABASE_URL,
+      DATABASE_PUBLIC_URL: !!process.env.DATABASE_PUBLIC_URL,
+      PGHOST: !!process.env.PGHOST,
+      PGUSER: !!process.env.PGUSER,
+      PGPASSWORD: !!process.env.PGPASSWORD,
+      PGDATABASE: !!process.env.PGDATABASE,
+      POSTGRES_DB: !!process.env.POSTGRES_DB,
+      POSTGRES_URL: !!process.env.POSTGRES_URL,
+      RAILWAY_PRIVATE_DOMAIN: !!process.env.RAILWAY_PRIVATE_DOMAIN,
+    });
+  }
+
+  // Check for explicit DATABASE_URL first (standard)
   if (process.env.DATABASE_URL) {
+    console.log('🔗 Using DATABASE_URL');
     return process.env.DATABASE_URL;
   }
 
-  // Check for Railway's default environment variables
-  if (process.env.PGHOST && process.env.PGUSER && process.env.PGPASSWORD && process.env.PGDATABASE) {
+  // Check for Railway's DATABASE_PUBLIC_URL (external access)
+  if (process.env.DATABASE_PUBLIC_URL) {
+    console.log('🔗 Using Railway DATABASE_PUBLIC_URL');
+    return process.env.DATABASE_PUBLIC_URL;
+  }
+
+  // Check for standard PostgreSQL environment variables
+  const pgHost = process.env.PGHOST;
+  const pgUser = process.env.PGUSER;
+  const pgPassword = process.env.PGPASSWORD;
+  const pgDatabase = process.env.PGDATABASE || process.env.POSTGRES_DB; // Railway uses POSTGRES_DB sometimes
+  
+  if (pgHost && pgUser && pgPassword && pgDatabase) {
     const port = process.env.PGPORT || '5432';
-    return `postgresql://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.PGHOST}:${port}/${process.env.PGDATABASE}`;
+    const url = `postgresql://${pgUser}:${pgPassword}@${pgHost}:${port}/${pgDatabase}`;
+    console.log('🔗 Using individual PostgreSQL environment variables');
+    return url;
   }
 
   // Check for Heroku Postgres
   if (process.env.HEROKU_POSTGRESQL_ADDON_URI) {
+    console.log('🔗 Using Heroku PostgreSQL');
     return process.env.HEROKU_POSTGRESQL_ADDON_URI;
   }
 
   // Check for Vercel Postgres (Neon-backed)
   if (process.env.POSTGRES_URL) {
+    console.log('🔗 Using Vercel Postgres');
     return process.env.POSTGRES_URL;
   }
 
   // Check for Supabase
   if (process.env.SUPABASE_DB_URL) {
+    console.log('🔗 Using Supabase');
     return process.env.SUPABASE_DB_URL;
   }
 
@@ -39,14 +71,27 @@ function getDatabaseUrl(): string {
     return 'postgresql://postgres:postgres@localhost:5432/hospital_management';
   }
 
+  // Enhanced error message with environment debugging
+  const availableVars = Object.keys(process.env)
+    .filter(key => key.includes('PG') || key.includes('DATABASE') || key.includes('POSTGRES'))
+    .sort();
+    
   throw new Error(
-    "No database connection URL found. Please set one of the following environment variables:\n" +
+    "❌ No database connection URL found.\n\n" +
+    "🔍 Expected environment variables:\n" +
     "- DATABASE_URL (recommended)\n" +
-    "- PGHOST, PGUSER, PGPASSWORD, PGDATABASE (Railway/generic PostgreSQL)\n" +
+    "- DATABASE_PUBLIC_URL (Railway external)\n" +
+    "- PGHOST, PGUSER, PGPASSWORD, PGDATABASE/POSTGRES_DB (standard PostgreSQL)\n" +
     "- HEROKU_POSTGRESQL_ADDON_URI (Heroku)\n" +
     "- POSTGRES_URL (Vercel)\n" +
     "- SUPABASE_DB_URL (Supabase)\n\n" +
-    "For Railway deployment, ensure your PostgreSQL add-on is properly configured."
+    "🔍 Available database-related environment variables:\n" +
+    (availableVars.length > 0 ? availableVars.join(', ') : 'None found') + "\n\n" +
+    "💡 For Railway:\n" +
+    "1. Ensure PostgreSQL service is added to your project\n" +
+    "2. Check that services are properly linked\n" +
+    "3. Verify deployment is connected to the database service\n" +
+    "4. Railway should automatically set DATABASE_URL when PostgreSQL is connected"
   );
 }
 

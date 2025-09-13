@@ -3,11 +3,38 @@
 
 ## Supported Platforms
 
-### Railway
-1. Connect your repository to Railway
-2. Add a PostgreSQL database service
-3. Environment variables are automatically set by Railway
-4. Deploy using: `npm run build && npm start`
+### Railway ⚠️ **READ CAREFULLY**
+
+Railway requires explicit service linking for database connections:
+
+1. **Connect Repository**
+   - Connect your GitHub repository to Railway
+   - Railway automatically detects Node.js app
+
+2. **Add PostgreSQL Database** 
+   - In Railway dashboard: "New" → "Database" → "Add PostgreSQL"
+   - This creates a separate PostgreSQL service
+
+3. **Link Services** ⚠️ **CRITICAL STEP**
+   - Go to your app service → "Variables" tab
+   - Add reference variable: `DATABASE_URL` = `${{Postgres.DATABASE_URL}}`
+   - **OR** ensure both services are in the same project (auto-linked)
+   - **Without this step, your app won't find the database!**
+
+4. **Deploy**
+   - Railway auto-deploys on push to main branch
+   - Check logs to verify DATABASE_URL is available
+
+5. **Run Migrations**
+   ```bash
+   railway run npm run db:push
+   ```
+
+**Railway Troubleshooting:**
+- Error "No database connection URL found" = Services not linked
+- Check Variables tab for DATABASE_URL presence
+- Verify PostgreSQL service is running
+- Use `railway logs` to see deployment errors
 
 ### Heroku
 1. Create a new Heroku app
