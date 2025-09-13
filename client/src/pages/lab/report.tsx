@@ -232,8 +232,8 @@ export default function LabReport() {
         currentY += 6;
       }
 
-      // Horizontal line under header (dynamic position)
-      const headerEndY = currentY + 3;
+      // Horizontal line under header (fixed position)
+      const headerEndY = 27;
       doc.setLineWidth(0.5);
       doc.line(15, headerEndY, pageWidth - 15, headerEndY);
 
