@@ -17,11 +17,11 @@ import { useLocation } from 'wouter';
 
 const hospitalSchema = z.object({
   name: z.string().min(1, 'Hospital name is required'),
-  address: z.string().min(1, 'Address is required'),
-  phone: z.string().min(10, 'Phone number must be at least 10 digits'),
-  email: z.string().email('Invalid email address'),
+  address: z.string().optional(),
+  phone: z.string().optional(),
+  email: z.string().optional(),
   website: z.string().optional(),
-  registrationNumber: z.string().min(1, 'Registration number is required'),
+  registrationNumber: z.string().optional(),
 });
 
 type HospitalFormData = z.infer<typeof hospitalSchema>;
