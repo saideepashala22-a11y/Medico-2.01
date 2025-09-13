@@ -461,11 +461,6 @@ export default function LabReport() {
       doc.setFontSize(9);
       doc.text("Lab Incharge", 140, yPos);
 
-      // Professional signature line (properly positioned)
-      yPos += 15;
-      doc.setLineWidth(0.5);
-      doc.line(120, yPos, 180, yPos);
-
       // Report Footer (at the very end)
       yPos += 35;
       doc.setFontSize(8);
