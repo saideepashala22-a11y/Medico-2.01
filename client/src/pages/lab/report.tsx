@@ -420,8 +420,8 @@ export default function LabReport() {
                   
                   // Special spacing for Total R.B.C COUNT female range
                   if (testResult.testName === "Total R.B.C COUNT") {
-                    doc.text(femaleRange.trim(), 140, yPos + 4); // Female range at Y = 120
-                    yPos += 4; // Reduced extra space for Total R.B.C COUNT
+                    doc.text(femaleRange.trim(), 140, yPos + 6); // Female range at Y = 122
+                    yPos += 6; // Standard extra space for Total R.B.C COUNT
                   } else {
                     doc.text(femaleRange.trim(), 140, yPos + 6);
                     yPos += 6; // Extra space for two-line reference
