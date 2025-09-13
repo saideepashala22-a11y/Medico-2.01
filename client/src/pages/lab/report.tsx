@@ -311,10 +311,10 @@ export default function LabReport() {
 
       doc.setFontSize(9);
       doc.setFont("helvetica", "bold");
-      doc.text("INVESTIGATION", 20, yPos + 8);
-      doc.text("VALUE", 90, yPos + 8);
-      doc.text("UNIT", 120, yPos + 8);
-      doc.text("REFERENCE RANGE", 140, yPos + 8);
+      doc.text("INVESTIGATION", 20, yPos + 5);
+      doc.text("VALUE", 90, yPos + 5);
+      doc.text("UNIT", 120, yPos + 5);
+      doc.text("REFERENCE RANGE", 140, yPos + 5);
 
       yPos += 18; // More space after headers
 
