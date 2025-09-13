@@ -292,53 +292,69 @@ export default function Lab() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Patient</TableHead>
-                    <TableHead>Tests</TableHead>
+                    <TableHead>Test Details</TableHead>
                     <TableHead>Date</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {recentTests.map((test: any) => (
-                    <TableRow key={test.id}>
-                      <TableCell>
-                        <div>
-                          <p className="font-semibold">{test.patient?.salutation} {test.patient?.fullName}</p>
-                          <p className="text-sm text-gray-600">{test.patient?.mruNumber}</p>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="max-w-xs">
-                          {test.testTypes && Array.isArray(test.testTypes) ? (
-                            <p className="text-sm">
-                              {test.testTypes.map((testType: any) => testType.testName).join(', ')}
-                            </p>
-                          ) : (
-                            <p className="text-sm text-gray-400">No tests specified</p>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center text-sm text-gray-600">
-                          <Calendar className="mr-1 h-4 w-4" />
-                          {new Date(test.createdAt).toLocaleDateString()}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="bg-green-50 text-green-800 border-green-200">
-                          Completed
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Link href={`/lab/report/${test.id}`}>
-                          <Button variant="ghost" size="sm">
-                            <FileText className="mr-1 h-4 w-4" />
-                            View Report
-                          </Button>
-                        </Link>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {recentTests.map((test: any, index: number) => {
+                    // Get the last 4 characters of test ID for display
+                    const testDisplayId = test.id ? test.id.slice(-4).toUpperCase() : `T${index + 1}`;
+                    const testTime = new Date(test.createdAt).toLocaleTimeString('en-US', { 
+                      hour: '2-digit', 
+                      minute: '2-digit', 
+                      hour12: false 
+                    });
+                    
+                    return (
+                      <TableRow key={test.id}>
+                        <TableCell>
+                          <div>
+                            <p className="font-semibold">{test.patient?.salutation} {test.patient?.fullName}</p>
+                            <p className="text-sm text-gray-600">{test.patient?.mruNumber}</p>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="max-w-xs">
+                            <div className="flex items-center gap-2 mb-1">
+                              <Badge variant="secondary" className="text-xs font-mono bg-blue-50 text-blue-700 border-blue-200">
+                                #{testDisplayId}
+                              </Badge>
+                              <span className="text-xs text-gray-500">{testTime}</span>
+                            </div>
+                            {test.testTypes && Array.isArray(test.testTypes) ? (
+                              <p className="text-sm font-medium">
+                                {test.testTypes.map((testType: any) => testType.testName).join(', ')}
+                              </p>
+                            ) : (
+                              <p className="text-sm text-gray-400">No tests specified</p>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center text-sm text-gray-600">
+                            <Calendar className="mr-1 h-4 w-4" />
+                            {new Date(test.createdAt).toLocaleDateString()}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className="bg-green-50 text-green-800 border-green-200">
+                            Completed
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Link href={`/lab/report/${test.id}`}>
+                            <Button variant="ghost" size="sm">
+                              <FileText className="mr-1 h-4 w-4" />
+                              View Report
+                            </Button>
+                          </Link>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             ) : (
