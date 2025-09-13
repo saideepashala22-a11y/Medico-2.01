@@ -425,7 +425,7 @@ export default function LabReport() {
       doc.setFontSize(9);
       doc.setFont("helvetica", "italic");
       doc.text(
-        "NOTE: All tests performed using calibrated instruments and quality controlled reagents.",
+        "NOTE : Please Correlate Clinically if necessary kindly discuss",
         20,
         yPos,
       );
