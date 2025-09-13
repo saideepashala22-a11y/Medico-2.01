@@ -468,7 +468,7 @@ export default function LabReport() {
         const barcodeImage = generateBarcodeImage(barcodeData);
         // Add small barcode on left side
         const barcodeWidth = 60;
-        const barcodeHeight = 20;
+        const barcodeHeight = 10; // Reduced by 50% from 20 to 10
         doc.addImage(barcodeImage, 'PNG', 20, yPos, barcodeWidth, barcodeHeight);
       } catch (error) {
         console.warn('Failed to add barcode:', error);
