@@ -483,11 +483,10 @@ export default function LabReport() {
       doc.setFontSize(9);
       doc.text("Lab Incharge", pageWidth - 40, yPos + 12, { align: "right" });
 
-      // Report Footer (at the very end)
-      yPos += 35;
+      // Report Footer (at the bottom of the page)
       doc.setFontSize(8);
       doc.setFont("helvetica", "italic");
-      doc.text("*** End of Report ***", pageWidth / 2, yPos + 10, {
+      doc.text("*** End of Report ***", pageWidth / 2, pageHeight - 10, {
         align: "center",
       });
 
