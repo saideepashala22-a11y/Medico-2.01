@@ -104,10 +104,47 @@ function isNeonProvider(url: string): boolean {
 }
 
 // Get SSL configuration for non-Neon providers
-function getSSLConfig() {
-  if (process.env.PGSSL === 'true' || process.env.NODE_ENV === 'production') {
+function getSSLConfig(databaseUrl: string) {
+  // Parse SSL mode from connection string
+  const urlParams = new URLSearchParams(databaseUrl.split('?')[1] || '');
+  const sslMode = urlParams.get('sslmode');
+  
+  // Force SSL verification off only for platforms that need it (Railway with self-signed certs)
+  const needsUnverifiedSSL = 
+    databaseUrl.includes('railway') ||
+    sslMode === 'no-verify' ||
+    process.env.RAILWAY_ENVIRONMENT;
+
+  if (needsUnverifiedSSL) {
+    console.log('🔒 Using SSL with disabled certificate verification (Railway/self-signed)');
     return { rejectUnauthorized: false };
   }
+
+  // Use proper SSL verification for secure platforms
+  const needsVerifiedSSL = 
+    databaseUrl.includes('heroku') ||
+    databaseUrl.includes('render') ||
+    databaseUrl.includes('fly.io') ||
+    databaseUrl.includes('supabase') ||
+    sslMode === 'require' ||
+    urlParams.get('ssl') === 'true' ||
+    process.env.HEROKU_APP_NAME ||
+    process.env.RENDER ||
+    process.env.FLY_APP_NAME ||
+    process.env.PGSSL === 'true';
+
+  if (needsVerifiedSSL) {
+    console.log('🔒 Using SSL with certificate verification');
+    return true; // Enable SSL with proper verification
+  }
+
+  // Allow override for forced verification
+  if (process.env.PGSSL_VERIFY === 'true') {
+    console.log('🔒 Using SSL with forced certificate verification (PGSSL_VERIFY=true)');
+    return true;
+  }
+  
+  console.log('🔓 No SSL (local development)');
   return false;
 }
 
@@ -125,7 +162,7 @@ if (isNeonProvider(databaseUrl)) {
   console.log('🔗 Using Neon/Vercel PostgreSQL driver');
 } else {
   // Use standard PostgreSQL driver for Railway, Heroku, Render, etc.
-  const sslConfig = getSSLConfig();
+  const sslConfig = getSSLConfig(databaseUrl);
   pool = new PgPool({ 
     connectionString: databaseUrl,
     ssl: sslConfig
