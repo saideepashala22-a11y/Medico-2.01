@@ -429,11 +429,6 @@ export default function LabReport() {
         20,
         yPos,
       );
-      doc.text(
-        "Reference ranges are age and gender specific. Please correlate with clinical findings.",
-        20,
-        yPos + 7,
-      );
 
       // Lab Technician Signature Section (at the very end after all tests)
       yPos += 25;
@@ -461,12 +456,6 @@ export default function LabReport() {
       yPos += 35;
       doc.setFontSize(8);
       doc.setFont("helvetica", "italic");
-      doc.text(
-        "*** This report is computer generated and does not require signature ***",
-        pageWidth / 2,
-        yPos + 5,
-        { align: "center" },
-      );
       doc.text("*** End of Report ***", pageWidth / 2, yPos + 10, {
         align: "center",
       });
