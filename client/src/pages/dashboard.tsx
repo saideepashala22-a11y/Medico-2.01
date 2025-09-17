@@ -37,7 +37,9 @@ import {
   RefreshCw,
   UserCheck,
   MessageCircle,
-  X
+  X,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 export default function Dashboard() {
@@ -437,7 +439,21 @@ export default function Dashboard() {
         {/* Sidebar Navigation */}
         <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} fixed inset-y-0 left-0 z-40 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 border-r border-gray-200 dark:border-gray-700`}>
           <div className="flex flex-col h-full">
-            <div className="flex-1 flex flex-col pt-20 pb-4 overflow-y-auto">
+            {/* Sidebar Header with Toggle Button */}
+            <div className="flex items-center justify-between p-4 pt-20 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Menu</h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSidebarOpen(false)}
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                title="Close Menu"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="flex-1 flex flex-col pb-4 overflow-y-auto">
               <nav className="mt-5 flex-1 px-2 space-y-1">
                 <Link href="/dashboard">
                   <Button variant="ghost" className="w-full justify-start bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300">
@@ -491,6 +507,17 @@ export default function Dashboard() {
             </div>
           </div>
         </aside>
+
+        {/* Floating sidebar toggle button when closed */}
+        {!sidebarOpen && (
+          <Button
+            onClick={() => setSidebarOpen(true)}
+            className="fixed top-20 left-4 z-50 h-12 w-12 rounded-full bg-theme-primary hover:bg-theme-primary/90 shadow-lg lg:hidden"
+            title="Open Menu"
+          >
+            <ChevronRight className="h-5 w-5 text-white" />
+          </Button>
+        )}
 
         {/* Main Dashboard Content */}
         <main 
