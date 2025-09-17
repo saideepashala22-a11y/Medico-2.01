@@ -35,7 +35,9 @@ import {
   AlertTriangle,
   Clock,
   RefreshCw,
-  UserCheck
+  UserCheck,
+  MessageCircle,
+  X
 } from 'lucide-react';
 
 export default function Dashboard() {
@@ -47,6 +49,7 @@ export default function Dashboard() {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [showAllNotifications, setShowAllNotifications] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [chatWidgetOpen, setChatWidgetOpen] = useState(true);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const searchDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -350,7 +353,7 @@ export default function Dashboard() {
               </div>
             </div>
             
-            {/* Right: Notifications + User Profile */}
+            {/* Right: Notifications + Chat Toggle + User Profile */}
             <div className="flex items-center space-x-4">
               <Button 
                 variant="ghost" 
@@ -361,6 +364,18 @@ export default function Dashboard() {
                 <Bell className="h-5 w-5" />
                 <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">3</span>
               </Button>
+              
+              {/* Chat Widget Toggle */}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setChatWidgetOpen(!chatWidgetOpen)}
+                className="relative"
+                title={chatWidgetOpen ? "Close Chat" : "Open Chat"}
+              >
+                <MessageCircle className="h-5 w-5" />
+              </Button>
+              
               <ThemeSelector />
               <div className="relative" ref={userMenuRef}>
                 <Button 
@@ -878,7 +893,19 @@ export default function Dashboard() {
       </div>
       
       {/* AI Chat Widget */}
-      <ChatWidget />
+      {/* Chat Widget with close functionality */}
+      {chatWidgetOpen && <ChatWidget onClose={() => setChatWidgetOpen(false)} />}
+      
+      {/* Floating Chat Button when widget is closed */}
+      {!chatWidgetOpen && (
+        <Button
+          onClick={() => setChatWidgetOpen(true)}
+          className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-theme-primary hover:bg-theme-primary/90 shadow-lg"
+          title="Open Chat"
+        >
+          <MessageCircle className="h-6 w-6 text-white" />
+        </Button>
+      )}
     </div>
   );
 }

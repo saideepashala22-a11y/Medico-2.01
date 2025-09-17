@@ -15,10 +15,11 @@ interface Message {
 
 interface ChatWidgetProps {
   className?: string;
+  onClose?: () => void;
 }
 
-export function ChatWidget({ className }: ChatWidgetProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export function ChatWidget({ className, onClose }: ChatWidgetProps) {
+  const [isOpen, setIsOpen] = useState(true);
   const [isMinimized, setIsMinimized] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -129,19 +130,7 @@ export function ChatWidget({ className }: ChatWidgetProps) {
     }
   };
 
-  if (!isOpen) {
-    return (
-      <div className={`fixed bottom-6 right-6 z-50 ${className}`}>
-        <Button
-          onClick={() => setIsOpen(true)}
-          className="h-14 w-14 rounded-full bg-blue-600 hover:bg-blue-700 shadow-lg"
-          data-testid="chat-open-button"
-        >
-          <MessageCircle className="h-6 w-6" />
-        </Button>
-      </div>
-    );
-  }
+  // Chat widget is now always shown when rendered since parent controls visibility
 
   const chatHeight = isMinimized ? 'h-12' : 'h-96';
   const chatWidth = isMinimized ? 'w-64' : 'w-80';
@@ -167,7 +156,10 @@ export function ChatWidget({ className }: ChatWidgetProps) {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                onClose?.();
+              }}
               className="h-6 w-6 p-0 text-white hover:bg-blue-700"
               data-testid="chat-close-button"
             >
