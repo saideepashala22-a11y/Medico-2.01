@@ -387,6 +387,7 @@ export class DatabaseStorage implements IStorage {
     })
     .from(labTests)
     .innerJoin(patientsRegistration, eq(labTests.patientId, patientsRegistration.id))
+    .where(eq(labTests.status, 'completed'))
     .orderBy(desc(labTests.createdAt))
     .limit(10);
   }
