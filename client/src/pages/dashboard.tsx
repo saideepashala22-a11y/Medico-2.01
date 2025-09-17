@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Link, useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
+import { Badge } from '@/components/ui/badge';
 import { ChatWidget } from '@/components/ChatWidget';
 import { StatCard } from '@/components/StatCard';
 import { ThemeSelector } from '@/components/ThemeSelector';
@@ -42,33 +43,67 @@ export default function Dashboard() {
   const [, setLocation] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [showAllNotifications, setShowAllNotifications] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const searchDropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
         setUserMenuOpen(false);
       }
+      if (searchDropdownRef.current && !searchDropdownRef.current.contains(event.target as Node)) {
+        setShowSearchDropdown(false);
+      }
     };
 
-    if (userMenuOpen) {
+    if (userMenuOpen || showSearchDropdown) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [userMenuOpen]);
+  }, [userMenuOpen, showSearchDropdown]);
 
   // Cache stats for 30 seconds to avoid constant refetching
   const { data: stats, isLoading } = useQuery({
     queryKey: ['/api/stats'],
     staleTime: 30 * 1000, // Cache for 30 seconds
     refetchInterval: 60 * 1000, // Auto-refresh every minute
+  });
+
+  // Fetch recent patients for search dropdown (when no search query)
+  const { data: recentPatients } = useQuery({
+    queryKey: ['/api/patients-registration/recent'],
+    queryFn: async () => {
+      const response = await fetch('/api/patients-registration/recent', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      return response.json();
+    },
+    enabled: showSearchDropdown && !searchQuery.trim(), // Only fetch when dropdown is shown and no search query
+  });
+
+  // Fetch search results (when there's a search query)
+  const { data: searchResults } = useQuery({
+    queryKey: ['/api/patients-registration/search', searchQuery],
+    queryFn: async () => {
+      const response = await fetch(`/api/patients-registration/search/${encodeURIComponent(searchQuery)}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      return response.json();
+    },
+    enabled: showSearchDropdown && searchQuery.trim().length > 0, // Only fetch when there's a search query
+    staleTime: 0, // Always fetch fresh search results
   });
 
   // Fetch hospital settings for dynamic title (cached for 5 minutes)
@@ -149,7 +184,8 @@ export default function Dashboard() {
     if (e) e.preventDefault();
     if (searchQuery.trim()) {
       // Navigate to patients list with search query
-      setLocation(`/patients?search=${encodeURIComponent(searchQuery.trim())}`);
+      setLocation(`/patients-list?search=${encodeURIComponent(searchQuery.trim())}`);
+      setShowSearchDropdown(false);
     }
   };
 
@@ -158,6 +194,12 @@ export default function Dashboard() {
     if (e.key === 'Enter') {
       handleSearch();
     }
+  };
+
+  // Handle patient selection from dropdown
+  const handlePatientSelect = (patientId: string) => {
+    setShowSearchDropdown(false);
+    setLocation(`/patient-registration/${patientId}`);
   };
 
   // Helper function to format time ago
@@ -206,7 +248,7 @@ export default function Dashboard() {
             
             {/* Center: Global Search */}
             <div className="flex-1 flex justify-center px-6 max-w-2xl">
-              <div className="w-full max-w-lg">
+              <div className="w-full max-w-lg" ref={searchDropdownRef}>
                 <form onSubmit={handleSearch} className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Search className="h-5 w-5 text-gray-400" />
@@ -217,9 +259,93 @@ export default function Dashboard() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={handleSearchKeyDown}
+                    onFocus={() => setShowSearchDropdown(true)}
                     className="pl-10 w-full"
                     data-testid="global-search-input"
                   />
+                  
+                  {/* Search Dropdown */}
+                  {showSearchDropdown && (
+                    <div className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg max-h-96 overflow-y-auto">
+                      {searchQuery.trim() ? (
+                        // Show search results
+                        <>
+                          {!searchResults || (Array.isArray(searchResults) && searchResults.length === 0) ? (
+                            <div className="p-3 text-sm text-gray-500 dark:text-gray-400">
+                              {searchQuery.length > 0 ? `No patients found for "${searchQuery}"` : 'Start typing to search...'}
+                            </div>
+                          ) : (
+                            <>
+                              <div className="p-2 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                                <p className="text-xs text-gray-600 dark:text-gray-300 font-medium">Search Results</p>
+                              </div>
+                              {(Array.isArray(searchResults) ? searchResults : []).map((patient: any) => (
+                                <div 
+                                  key={patient.id}
+                                  className="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-600 last:border-b-0"
+                                  onClick={() => handlePatientSelect(patient.id)}
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <div>
+                                      <p className="font-medium text-gray-900 dark:text-white">
+                                        {patient.salutation} {patient.fullName}
+                                      </p>
+                                      <p className="text-sm text-gray-500 dark:text-gray-400">{patient.mruNumber}</p>
+                                      <p className="text-xs text-gray-400 dark:text-gray-500">
+                                        {patient.contactPhone} • Age: {patient.age} {patient.ageUnit}
+                                      </p>
+                                    </div>
+                                    <div className="text-right">
+                                      <Badge variant="outline" className="text-xs">
+                                        {patient.bloodGroup || 'Unknown'}
+                                      </Badge>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </>
+                          )}
+                        </>
+                      ) : (
+                        // Show recent patients when no search query  
+                        <>
+                          {(!recentPatients || !Array.isArray(recentPatients) || recentPatients.length === 0) ? (
+                            <div className="p-3 text-sm text-gray-500 dark:text-gray-400">No recent patients found</div>
+                          ) : (
+                            <>
+                              <div className="p-2 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                                <p className="text-xs text-gray-600 dark:text-gray-300 font-medium">Recent 10 Patients</p>
+                              </div>
+                              {recentPatients.slice(0, 10).map((patient: any) => (
+                                <div 
+                                  key={patient.id}
+                                  className="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-600 last:border-b-0"
+                                  onClick={() => handlePatientSelect(patient.id)}
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <div>
+                                      <p className="font-medium text-gray-900 dark:text-white">
+                                        {patient.salutation} {patient.fullName}
+                                      </p>
+                                      <p className="text-sm text-gray-500 dark:text-gray-400">{patient.mruNumber}</p>
+                                      <p className="text-xs text-gray-400 dark:text-gray-500">
+                                        {patient.contactPhone} • Age: {patient.age} {patient.ageUnit}
+                                      </p>
+                                    </div>
+                                    <div className="text-right">
+                                      <Badge variant="outline" className="text-xs">
+                                        {patient.bloodGroup || 'Unknown'}
+                                      </Badge>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  )}
                 </form>
               </div>
             </div>
