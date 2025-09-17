@@ -2,7 +2,7 @@ import { useAuth } from '@/hooks/use-auth-simple';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { ChatWidget } from '@/components/ChatWidget';
 import { StatCard } from '@/components/StatCard';
@@ -39,6 +39,7 @@ import {
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
+  const [, setLocation] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -143,6 +144,22 @@ export default function Dashboard() {
     }
   };
 
+  // Handle search functionality
+  const handleSearch = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (searchQuery.trim()) {
+      // Navigate to patients list with search query
+      setLocation(`/patients?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  // Handle Enter key press in search input
+  const handleSearchKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   // Helper function to format time ago
   const formatTimeAgo = (dateString: string) => {
     const now = new Date();
@@ -190,7 +207,7 @@ export default function Dashboard() {
             {/* Center: Global Search */}
             <div className="flex-1 flex justify-center px-6 max-w-2xl">
               <div className="w-full max-w-lg">
-                <div className="relative">
+                <form onSubmit={handleSearch} className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Search className="h-5 w-5 text-gray-400" />
                   </div>
@@ -199,9 +216,11 @@ export default function Dashboard() {
                     placeholder="Search patients, reports..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={handleSearchKeyDown}
                     className="pl-10 w-full"
+                    data-testid="global-search-input"
                   />
-                </div>
+                </form>
               </div>
             </div>
             
