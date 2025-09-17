@@ -235,7 +235,8 @@ export default function Dashboard() {
                 variant="ghost"
                 size="sm"
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="mr-3 lg:hidden"
+                className="mr-3"
+                title={sidebarOpen ? "Close Menu" : "Open Menu"}
               >
                 <Menu className="h-5 w-5" />
               </Button>
