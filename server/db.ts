@@ -157,7 +157,17 @@ let db: ReturnType<typeof drizzle> | ReturnType<typeof drizzlePg>;
 if (isNeonProvider(databaseUrl)) {
   // Use Neon driver for Neon and Vercel Postgres
   neonConfig.webSocketConstructor = ws;
-  pool = new NeonPool({ connectionString: databaseUrl });
+  
+  // Configure connection pool with proper settings for Neon serverless
+  pool = new NeonPool({ 
+    connectionString: databaseUrl,
+    max: 10, // Maximum number of connections
+    maxUses: 1000, // Maximum uses per connection before replacement
+    idleTimeoutMillis: 30000, // 30 seconds idle timeout
+    allowExitOnIdle: true, // Allow pool to close when idle
+    connectionTimeoutMillis: 5000 // 5 second timeout for acquiring connections
+  });
+  
   db = drizzle({ client: pool, schema });
   console.log('🔗 Using Neon/Vercel PostgreSQL driver');
 } else {
