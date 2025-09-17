@@ -93,21 +93,7 @@ export default function Lab() {
 
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Action Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
-            <Link href="/lab/patient-registration">
-              <CardHeader className="text-center">
-                <div className="mx-auto w-12 h-12 bg-medical-blue bg-opacity-10 rounded-full flex items-center justify-center mb-4 group-hover:bg-opacity-20 transition-colors">
-                  <User className="h-6 w-6 text-medical-blue" />
-                </div>
-                <CardTitle className="text-lg">Start New Test</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 text-center">Register a new patient and begin the lab testing workflow</p>
-              </CardContent>
-            </Link>
-          </Card>
-
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
             <Link href="/lab/lab-tests">
               <CardHeader className="text-center">
@@ -266,15 +252,6 @@ export default function Lab() {
           </Card>
         </div>
 
-        {/* Main Action */}
-        <div className="text-center mb-8">
-          <Link href="/lab/patient-registration">
-            <Button size="lg" className="bg-medical-blue hover:bg-blue-700">
-              <Plus className="mr-2 h-5 w-5" />
-              Start New Lab Test
-            </Button>
-          </Link>
-        </div>
 
         {/* Recent Tests */}
         <Card>
@@ -361,11 +338,6 @@ export default function Lab() {
               <div className="text-center py-8">
                 <TestTube className="mx-auto h-12 w-12 text-gray-400 mb-4" />
                 <p className="text-gray-600">No recent lab tests found</p>
-                <Link href="/lab/patient-registration">
-                  <Button className="mt-4 bg-medical-blue hover:bg-blue-700">
-                    Start First Test
-                  </Button>
-                </Link>
               </div>
             )}
           </CardContent>
