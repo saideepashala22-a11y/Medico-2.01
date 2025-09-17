@@ -164,7 +164,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Top Navigation Bar */}
-      <nav className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
+      <nav className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 fixed top-0 left-0 right-0 z-50 lg:left-64">
         <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             {/* Left: Logo + Hospital Name */}
@@ -272,11 +272,11 @@ export default function Dashboard() {
         </div>
       </nav>
       
-      <div className="flex pt-16 lg:pt-0">
+      <div className="flex">
         {/* Sidebar Navigation */}
-        <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} fixed inset-y-0 left-0 z-40 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 lg:shadow-none border-r border-gray-200 dark:border-gray-700`}>
+        <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} fixed inset-y-0 left-0 z-40 w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 border-r border-gray-200 dark:border-gray-700`}>
           <div className="flex flex-col h-full">
-            <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
+            <div className="flex-1 flex flex-col pt-20 pb-4 overflow-y-auto">
               <nav className="mt-5 flex-1 px-2 space-y-1">
                 <Link href="/dashboard">
                   <Button variant="ghost" className="w-full justify-start bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300">
@@ -333,7 +333,7 @@ export default function Dashboard() {
 
         {/* Main Dashboard Content */}
         <main 
-          className="flex-1 lg:pl-6 relative"
+          className="flex-1 lg:ml-64 lg:pl-6 pt-16 relative"
           onClick={() => {
             if (sidebarOpen && window.innerWidth < 1024) {
               setSidebarOpen(false);
