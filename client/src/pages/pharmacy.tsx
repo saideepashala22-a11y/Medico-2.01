@@ -263,7 +263,9 @@ export default function Pharmacy() {
       return;
     }
 
-    if (medicines.length === 0) {
+    // Check if there are any valid medicines (medicines with actual selections)
+    const validMedicines = medicines.filter(med => med.medicineId && med.medicineId.trim() !== '');
+    if (validMedicines.length === 0) {
       toast({
         title: 'Error',
         description: 'Please add at least one medicine',
@@ -274,7 +276,7 @@ export default function Pharmacy() {
 
     const prescriptionData = {
       patientId: selectedPatient.id,
-      medicines: medicines.map(m => ({
+      medicines: validMedicines.map(m => ({
         medicineId: m.medicineId,
         name: m.name,
         dosage: m.dosage,
@@ -282,9 +284,9 @@ export default function Pharmacy() {
         price: m.price,
         total: m.total,
       })),
-      subtotal: getSubtotal().toFixed(2),
-      tax: getTax().toFixed(2),
-      total: getTotal().toFixed(2),
+      subtotal: validMedicines.reduce((sum, item) => sum + item.total, 0).toFixed(2),
+      tax: '0.00', // No GST/tax as per requirement
+      total: validMedicines.reduce((sum, item) => sum + item.total, 0).toFixed(2),
     };
 
     createPrescriptionMutation.mutate(prescriptionData);
@@ -318,10 +320,13 @@ export default function Pharmacy() {
 
 
   const handlePrintGSTBill = () => {
-    if (!selectedPatient || medicines.length === 0) {
+    // Check if patient is selected and if there are any valid medicines
+    const validMedicines = medicines.filter(med => med.medicineId && med.medicineId.trim() !== '');
+    
+    if (!selectedPatient || validMedicines.length === 0) {
       toast({
         title: 'Error',
-        description: 'Please complete the prescription first',
+        description: 'Please select a patient and add at least one medicine',
         variant: 'destructive',
       });
       return;
@@ -340,7 +345,7 @@ export default function Pharmacy() {
         mobile: selectedPatient.contactPhone || selectedPatient.contact,
         doctorName: selectedPatient.referringDoctor || undefined,
       },
-      medicines: medicines.map(med => ({
+      medicines: validMedicines.map(med => ({
         name: med.name,
         pack: '1S', // Default pack
         batch: 'B110', // Default batch
@@ -352,9 +357,9 @@ export default function Pharmacy() {
         cgst: 0.00, // 0% GST as per requirement
         total: med.total,
       })),
-      subtotal: getSubtotal(),
+      subtotal: validMedicines.reduce((sum, item) => sum + item.total, 0),
       discount: 0.00,
-      grandTotal: getTotal(),
+      grandTotal: validMedicines.reduce((sum, item) => sum + item.total, 0),
       hospitalSettings,
     };
 
