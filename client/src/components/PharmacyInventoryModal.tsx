@@ -48,9 +48,9 @@ export function PharmacyInventoryModal({ isOpen, onClose }: PharmacyInventoryMod
   
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Fetch all medicines
+  // Fetch all active medicines
   const { data: medicines, isLoading } = useQuery({
-    queryKey: ['/api/medicines'],
+    queryKey: ['/api/medicines/active'],
     enabled: isOpen,
     refetchOnWindowFocus: true,
     staleTime: 0, // Always refetch when needed
@@ -72,7 +72,7 @@ export function PharmacyInventoryModal({ isOpen, onClose }: PharmacyInventoryMod
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/medicines'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/medicines/active'] });
       toast({
         title: 'Success',
         description: 'Medicine removed from inventory',
