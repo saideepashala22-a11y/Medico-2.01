@@ -574,7 +574,7 @@ export default function Pharmacy() {
                                   </SelectItem>
                                 ))}
                                 {(!availableMedicines || availableMedicines.length === 0) && (
-                                  <SelectItem value="" disabled>
+                                  <SelectItem value="no-medicines-available" disabled>
                                     No medicines available
                                   </SelectItem>
                                 )}
