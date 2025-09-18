@@ -101,7 +101,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: 'Invalid credentials' });
       }
 
-      if (user.role !== role) {
+      if (user.role !== role.toUpperCase()) {
         return res.status(401).json({ message: 'Invalid role' });
       }
 
