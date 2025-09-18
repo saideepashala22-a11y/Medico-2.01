@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { ChatWidget } from '@/components/ChatWidget';
 import { StatCard } from '@/components/StatCard';
 import { ThemeSelector } from '@/components/ThemeSelector';
+import { ROLE_PERMISSIONS, type UserRole, type ModulePermission } from '@shared/schema';
 import { useState, useRef, useEffect } from 'react';
 import { 
   Hospital, 
@@ -45,6 +46,13 @@ import {
 export default function Dashboard() {
   const { user, logout } = useAuth();
   const [, setLocation] = useLocation();
+
+  // Function to check if user has permission for a specific module
+  const hasPermission = (module: ModulePermission): boolean => {
+    if (!user?.role) return false;
+    const permissions = ROLE_PERMISSIONS[user.role as UserRole];
+    return permissions?.includes(module) || false;
+  };
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
@@ -782,107 +790,119 @@ export default function Dashboard() {
             <div className="mb-8">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Hospital Modules</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* Patient Registration */}
-                <Link href="/patient-registration">
-                  <Card className="cursor-pointer bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 border-0 rounded-2xl overflow-hidden group">
-                    <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-6 group-hover:from-green-600 group-hover:to-emerald-700 transition-all duration-300">
-                      <UserPlus className="text-white text-3xl mb-4" />
-                      <h3 className="text-xl font-bold text-white">Patient Registration</h3>
-                      <p className="text-green-100 text-sm">Manage Prescriptions & Billing</p>
-                    </div>
-                    <CardContent className="p-6">
-                      <p className="text-gray-600 dark:text-gray-300 mb-4">Central patient registration with unique ID for all modules</p>
-                      <Button variant="outline" className="w-full group-hover:bg-green-50 group-hover:text-green-700 group-hover:border-green-200 transition-all duration-300">
-                        View Details
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </Link>
+                {/* Patient Registration - Only show if user has permission */}
+                {hasPermission('patient_registration') && (
+                  <Link href="/patient-registration">
+                    <Card className="cursor-pointer bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 border-0 rounded-2xl overflow-hidden group">
+                      <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-6 group-hover:from-green-600 group-hover:to-emerald-700 transition-all duration-300">
+                        <UserPlus className="text-white text-3xl mb-4" />
+                        <h3 className="text-xl font-bold text-white">Patient Registration</h3>
+                        <p className="text-green-100 text-sm">Manage Prescriptions & Billing</p>
+                      </div>
+                      <CardContent className="p-6">
+                        <p className="text-gray-600 dark:text-gray-300 mb-4">Central patient registration with unique ID for all modules</p>
+                        <Button variant="outline" className="w-full group-hover:bg-green-50 group-hover:text-green-700 group-hover:border-green-200 transition-all duration-300">
+                          View Details
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                )}
 
-                {/* Laboratory */}
-                <Link href="/lab">
-                  <Card className="cursor-pointer bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 border-0 rounded-2xl overflow-hidden group">
-                    <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6 group-hover:from-blue-600 group-hover:to-indigo-700 transition-all duration-300">
-                      <FlaskConical className="text-white text-3xl mb-4" />
-                      <h3 className="text-xl font-bold text-white">Laboratory</h3>
-                      <p className="text-blue-100 text-sm">Manage Tests & Reports</p>
-                    </div>
-                    <CardContent className="p-6">
-                      <p className="text-gray-600 dark:text-gray-300 mb-4">Manage lab tests, enter results, and generate reports</p>
-                      <Button variant="outline" className="w-full group-hover:bg-blue-50 group-hover:text-blue-700 group-hover:border-blue-200 transition-all duration-300">
-                        View Details
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </Link>
+                {/* Laboratory - Only show if user has permission */}
+                {hasPermission('laboratory') && (
+                  <Link href="/lab">
+                    <Card className="cursor-pointer bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 border-0 rounded-2xl overflow-hidden group">
+                      <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6 group-hover:from-blue-600 group-hover:to-indigo-700 transition-all duration-300">
+                        <FlaskConical className="text-white text-3xl mb-4" />
+                        <h3 className="text-xl font-bold text-white">Laboratory</h3>
+                        <p className="text-blue-100 text-sm">Manage Tests & Reports</p>
+                      </div>
+                      <CardContent className="p-6">
+                        <p className="text-gray-600 dark:text-gray-300 mb-4">Manage lab tests, enter results, and generate reports</p>
+                        <Button variant="outline" className="w-full group-hover:bg-blue-50 group-hover:text-blue-700 group-hover:border-blue-200 transition-all duration-300">
+                          View Details
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                )}
 
-                {/* Pharmacy */}
-                <Link href="/pharmacy">
-                  <Card className="cursor-pointer bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 border-0 rounded-2xl overflow-hidden group">
-                    <div className="bg-gradient-to-r from-emerald-500 to-teal-600 p-6 group-hover:from-emerald-600 group-hover:to-teal-700 transition-all duration-300">
-                      <Pill className="text-white text-3xl mb-4" />
-                      <h3 className="text-xl font-bold text-white">Pharmacy</h3>
-                      <p className="text-emerald-100 text-sm">Manage Prescriptions & Billing</p>
-                    </div>
-                    <CardContent className="p-6">
-                      <p className="text-gray-600 dark:text-gray-300 mb-4">Handle prescriptions, inventory, and billing</p>
-                      <Button variant="outline" className="w-full group-hover:bg-emerald-50 group-hover:text-emerald-700 group-hover:border-emerald-200 transition-all duration-300">
-                        View Details
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </Link>
+                {/* Pharmacy - Only show if user has permission */}
+                {hasPermission('pharmacy') && (
+                  <Link href="/pharmacy">
+                    <Card className="cursor-pointer bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 border-0 rounded-2xl overflow-hidden group">
+                      <div className="bg-gradient-to-r from-emerald-500 to-teal-600 p-6 group-hover:from-emerald-600 group-hover:to-teal-700 transition-all duration-300">
+                        <Pill className="text-white text-3xl mb-4" />
+                        <h3 className="text-xl font-bold text-white">Pharmacy</h3>
+                        <p className="text-emerald-100 text-sm">Manage Prescriptions & Billing</p>
+                      </div>
+                      <CardContent className="p-6">
+                        <p className="text-gray-600 dark:text-gray-300 mb-4">Handle prescriptions, inventory, and billing</p>
+                        <Button variant="outline" className="w-full group-hover:bg-emerald-50 group-hover:text-emerald-700 group-hover:border-emerald-200 transition-all duration-300">
+                          View Details
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                )}
 
-                {/* Discharge Summary */}
-                <Link href="/discharge">
-                  <Card className="cursor-pointer bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 border-0 rounded-2xl overflow-hidden group">
-                    <div className="bg-gradient-to-r from-orange-500 to-amber-600 p-6 group-hover:from-orange-600 group-hover:to-amber-700 transition-all duration-300">
-                      <FileText className="text-white text-3xl mb-4" />
-                      <h3 className="text-xl font-bold text-white">Discharge Summary</h3>
-                      <p className="text-orange-100 text-sm">Create & Manage Patient Reports</p>
-                    </div>
-                    <CardContent className="p-6">
-                      <p className="text-gray-600 dark:text-gray-300 mb-4">Create and manage patient discharge summaries</p>
-                      <Button variant="outline" className="w-full group-hover:bg-orange-50 group-hover:text-orange-700 group-hover:border-orange-200 transition-all duration-300">
-                        View Details
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </Link>
+                {/* Discharge Summary - Only show if user has permission */}
+                {hasPermission('discharge_summary') && (
+                  <Link href="/discharge">
+                    <Card className="cursor-pointer bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 border-0 rounded-2xl overflow-hidden group">
+                      <div className="bg-gradient-to-r from-orange-500 to-amber-600 p-6 group-hover:from-orange-600 group-hover:to-amber-700 transition-all duration-300">
+                        <FileText className="text-white text-3xl mb-4" />
+                        <h3 className="text-xl font-bold text-white">Discharge Summary</h3>
+                        <p className="text-orange-100 text-sm">Create & Manage Patient Reports</p>
+                      </div>
+                      <CardContent className="p-6">
+                        <p className="text-gray-600 dark:text-gray-300 mb-4">Create and manage patient discharge summaries</p>
+                        <Button variant="outline" className="w-full group-hover:bg-orange-50 group-hover:text-orange-700 group-hover:border-orange-200 transition-all duration-300">
+                          View Details
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                )}
 
-                {/* Surgical Case Sheets */}
-                <Link href="/surgical-case-sheets">
-                  <Card className="cursor-pointer bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 border-0 rounded-2xl overflow-hidden group">
-                    <div className="bg-gradient-to-r from-red-500 to-rose-600 p-6 group-hover:from-red-600 group-hover:to-rose-700 transition-all duration-300">
-                      <Scissors className="text-white text-3xl mb-4" />
-                      <h3 className="text-xl font-bold text-white">Surgical Case Sheet</h3>
-                      <p className="text-red-100 text-sm">Surgery Documentation</p>
-                    </div>
-                    <CardContent className="p-6">
-                      <p className="text-gray-600 dark:text-gray-300 mb-4">Create and manage surgical case sheets with downloadable forms</p>
-                      <Button variant="outline" className="w-full group-hover:bg-red-50 group-hover:text-red-700 group-hover:border-red-200 transition-all duration-300">
-                        View Details
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </Link>
+                {/* Surgical Case Sheets - Only show if user has permission */}
+                {hasPermission('surgical_case_sheet') && (
+                  <Link href="/surgical-case-sheets">
+                    <Card className="cursor-pointer bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 border-0 rounded-2xl overflow-hidden group">
+                      <div className="bg-gradient-to-r from-red-500 to-rose-600 p-6 group-hover:from-red-600 group-hover:to-rose-700 transition-all duration-300">
+                        <Scissors className="text-white text-3xl mb-4" />
+                        <h3 className="text-xl font-bold text-white">Surgical Case Sheet</h3>
+                        <p className="text-red-100 text-sm">Surgery Documentation</p>
+                      </div>
+                      <CardContent className="p-6">
+                        <p className="text-gray-600 dark:text-gray-300 mb-4">Create and manage surgical case sheets with downloadable forms</p>
+                        <Button variant="outline" className="w-full group-hover:bg-red-50 group-hover:text-red-700 group-hover:border-red-200 transition-all duration-300">
+                          View Details
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                )}
 
-                {/* Medical History */}
-                <Link href="/medical-history">
-                  <Card className="cursor-pointer bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 border-0 rounded-2xl overflow-hidden group">
-                    <div className="bg-gradient-to-r from-purple-500 to-violet-600 p-6 group-hover:from-purple-600 group-hover:to-violet-700 transition-all duration-300">
-                      <Heart className="text-white text-3xl mb-4" />
-                      <h3 className="text-xl font-bold text-white">Track Patient</h3>
-                      <p className="text-purple-100 text-sm">Medical History & Profiles</p>
-                    </div>
-                    <CardContent className="p-6">
-                      <p className="text-gray-600 dark:text-gray-300 mb-4">Track patient medical history, conditions, and profiles</p>
-                      <Button variant="outline" className="w-full group-hover:bg-purple-50 group-hover:text-purple-700 group-hover:border-purple-200 transition-all duration-300">
-                        View Details
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </Link>
+                {/* Medical History - Only show if user has permission */}
+                {hasPermission('consultation') && (
+                  <Link href="/medical-history">
+                    <Card className="cursor-pointer bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 border-0 rounded-2xl overflow-hidden group">
+                      <div className="bg-gradient-to-r from-purple-500 to-violet-600 p-6 group-hover:from-purple-600 group-hover:to-violet-700 transition-all duration-300">
+                        <Heart className="text-white text-3xl mb-4" />
+                        <h3 className="text-xl font-bold text-white">Track Patient</h3>
+                        <p className="text-purple-100 text-sm">Medical History & Profiles</p>
+                      </div>
+                      <CardContent className="p-6">
+                        <p className="text-gray-600 dark:text-gray-300 mb-4">Track patient medical history, conditions, and profiles</p>
+                        <Button variant="outline" className="w-full group-hover:bg-purple-50 group-hover:text-purple-700 group-hover:border-purple-200 transition-all duration-300">
+                          View Details
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                )}
               </div>
             </div>
 
