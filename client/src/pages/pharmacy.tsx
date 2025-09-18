@@ -139,8 +139,8 @@ export default function Pharmacy() {
     },
   });
 
-  // Find out-of-stock medicines (quantity = 0)
-  const outOfStockMedicines = allMedicines?.filter((medicine: any) => medicine.quantity === 0) || [];
+  // Find out-of-stock medicines (quantity = 0) - ensure allMedicines is an array
+  const outOfStockMedicines = Array.isArray(allMedicines) ? allMedicines.filter((medicine: any) => medicine.quantity === 0) : [];
 
   const createPrescriptionMutation = useMutation({
     mutationFn: async (data: any) => {
