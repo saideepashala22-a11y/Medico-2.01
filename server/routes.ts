@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { insertUserSchema, insertPatientSchema, insertLabTestSchema, insertPrescriptionSchema, insertDischargeSummarySchema, insertMedicalHistorySchema, insertPatientProfileSchema, insertConsultationSchema, insertLabTestDefinitionSchema, insertSurgicalCaseSheetSchema, insertPatientsRegistrationSchema, insertMedicineInventorySchema, insertHospitalSettingsSchema, type User } from "@shared/schema";
+import { insertUserSchema, insertPatientSchema, insertLabTestSchema, insertPrescriptionSchema, insertDischargeSummarySchema, insertMedicalHistorySchema, insertPatientProfileSchema, insertConsultationSchema, insertLabTestDefinitionSchema, insertSurgicalCaseSheetSchema, insertPatientsRegistrationSchema, insertMedicineInventorySchema, insertHospitalSettingsSchema, USER_ROLES, ROLE_PERMISSIONS, type User, type UserRole, type ModulePermission } from "@shared/schema";
 import { z } from "zod";
 import { generateChatResponse, generateMedicalAssistance } from "./gemini";
 import { sendOTP, generateOTP } from "./twilioService";
@@ -27,6 +27,62 @@ function authenticateToken(req: any, res: any, next: any) {
     req.user = user;
     next();
   });
+}
+
+// Middleware to check role permissions for specific modules
+function requirePermission(module: ModulePermission) {
+  return (req: any, res: any, next: any) => {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Authentication required' });
+    }
+
+    const userRole = req.user.role as UserRole;
+    const permissions = ROLE_PERMISSIONS[userRole];
+    
+    if (!permissions || !permissions.includes(module)) {
+      return res.status(403).json({ message: 'Access denied: insufficient permissions' });
+    }
+
+    next();
+  };
+}
+
+// Middleware to require Administrator role
+function requireAdminRole(req: any, res: any, next: any) {
+  if (!req.user) {
+    return res.status(401).json({ message: 'Authentication required' });
+  }
+
+  if (req.user.role !== USER_ROLES.ADMINISTRATOR) {
+    return res.status(403).json({ message: 'Access denied: Administrator role required' });
+  }
+
+  next();
+}
+
+// Middleware to check if user has any of the specified permissions (multi-role access)
+function requireAnyPermission(modules: ModulePermission[]) {
+  return (req: any, res: any, next: any) => {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Authentication required' });
+    }
+
+    const userRole = req.user.role as UserRole;
+    const permissions = ROLE_PERMISSIONS[userRole];
+    
+    if (!permissions) {
+      return res.status(403).json({ message: 'Access denied: no permissions found' });
+    }
+
+    // Check if user has any of the required permissions
+    const hasPermission = modules.some(module => permissions.includes(module));
+    
+    if (!hasPermission) {
+      return res.status(403).json({ message: 'Access denied: insufficient permissions' });
+    }
+
+    next();
+  };
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -71,7 +127,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/auth/register', async (req, res) => {
     try {
-      const userData = insertUserSchema.parse(req.body);
+      // Parse user data but ignore role from request body for security
+      const { role, ...requestData } = req.body;
+      const userData = insertUserSchema.parse({
+        ...requestData,
+        role: USER_ROLES.RECEPTIONIST // Default to safest role
+      });
       
       // Check if user already exists
       const existingUser = await storage.getUserByUsername(userData.username);
@@ -221,8 +282,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin-only user management routes
+  app.get('/api/admin/users', authenticateToken, requireAdminRole, async (req: any, res) => {
+    try {
+      const users = await storage.getAllDoctors(); // This gets all users regardless of role
+      const usersWithoutPasswords = users.map(({ password, ...user }) => user);
+      res.json(usersWithoutPasswords);
+    } catch (error) {
+      console.error('Get users error:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
+  app.put('/api/admin/users/:id/role', authenticateToken, requireAdminRole, async (req: any, res) => {
+    try {
+      const { role } = req.body;
+      const userId = req.params.id;
+
+      // Validate role
+      const validRoles = Object.values(USER_ROLES);
+      if (!validRoles.includes(role)) {
+        return res.status(400).json({ message: 'Invalid role' });
+      }
+
+      // Prevent admin from demoting themselves unless there's another admin
+      if (req.user.id === userId && role !== USER_ROLES.ADMINISTRATOR) {
+        const allUsers = await storage.getAllDoctors();
+        const adminCount = allUsers.filter(u => u.role === USER_ROLES.ADMINISTRATOR).length;
+        if (adminCount <= 1) {
+          return res.status(400).json({ message: 'Cannot demote the last administrator' });
+        }
+      }
+
+      // Update user role using updateUser method (we'll need to enhance storage for this)
+      const updatedUser = await storage.updateUser(userId, { role } as any);
+      const { password, ...userWithoutPassword } = updatedUser;
+      res.json(userWithoutPassword);
+    } catch (error) {
+      console.error('Update user role error:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
+  app.post('/api/admin/users', authenticateToken, requireAdminRole, async (req, res) => {
+    try {
+      const userData = insertUserSchema.parse(req.body);
+      
+      // Check if user already exists
+      const existingUser = await storage.getUserByUsername(userData.username);
+      if (existingUser) {
+        return res.status(409).json({ message: 'Username already exists' });
+      }
+
+      // Hash password
+      const hashedPassword = await bcrypt.hash(userData.password, 10);
+      
+      const user = await storage.createUser({
+        ...userData,
+        password: hashedPassword,
+      });
+
+      const { password, ...userWithoutPassword } = user;
+      res.status(201).json(userWithoutPassword);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: 'Invalid input', errors: error.errors });
+      }
+      console.error('Create user error:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
   // Patient routes
-  app.get('/api/patients', authenticateToken, async (req: any, res) => {
+  app.get('/api/patients', authenticateToken, requireAnyPermission(['patient_registration', 'consultation', 'laboratory', 'pharmacy']), async (req: any, res) => {
     try {
       const patients = await storage.getAllPatients();
       res.json(patients);
@@ -231,7 +363,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/patients/search', authenticateToken, async (req: any, res) => {
+  app.get('/api/patients/search', authenticateToken, requireAnyPermission(['patient_registration', 'consultation', 'laboratory', 'pharmacy']), async (req: any, res) => {
     try {
       const { q } = req.query;
       let patients;
@@ -251,7 +383,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/patients', authenticateToken, async (req: any, res) => {
+  app.post('/api/patients', authenticateToken, requirePermission('patient_registration'), async (req: any, res) => {
     try {
       const patientData = insertPatientSchema.parse(req.body);
       const patient = await storage.createPatient(patientData);
@@ -264,7 +396,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/patients/:id', authenticateToken, async (req: any, res) => {
+  app.get('/api/patients/:id', authenticateToken, requireAnyPermission(['patient_registration', 'consultation', 'laboratory', 'pharmacy']), async (req: any, res) => {
     try {
       const patient = await storage.getPatient(req.params.id);
       if (!patient) {
@@ -277,7 +409,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Lab test routes
-  app.post('/api/lab-tests', authenticateToken, async (req: any, res) => {
+  app.post('/api/lab-tests', authenticateToken, requirePermission('laboratory'), async (req: any, res) => {
     try {
       const labTestData = insertLabTestSchema.parse({
         ...req.body,
@@ -293,7 +425,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/lab-tests/:id', authenticateToken, async (req: any, res) => {
+  app.put('/api/lab-tests/:id', authenticateToken, requirePermission('laboratory'), async (req: any, res) => {
     try {
       const { results, doctorNotes, status } = req.body;
       const updatedLabTest = await storage.updateLabTest(req.params.id, {
@@ -307,7 +439,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/lab-tests/recent', authenticateToken, async (req: any, res) => {
+  app.get('/api/lab-tests/recent', authenticateToken, requirePermission('laboratory'), async (req: any, res) => {
     try {
       const labTests = await storage.getRecentLabTests();
       res.json(labTests);
@@ -316,7 +448,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/lab-tests/:id', authenticateToken, async (req: any, res) => {
+  app.get('/api/lab-tests/:id', authenticateToken, requirePermission('laboratory'), async (req: any, res) => {
     try {
       const labTest = await storage.getLabTest(req.params.id);
       if (!labTest) {
@@ -329,7 +461,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Lab Revenue Route
-  app.get('/api/lab-revenue', authenticateToken, async (req: any, res) => {
+  app.get('/api/lab-revenue', authenticateToken, requirePermission('laboratory'), async (req: any, res) => {
     try {
       // Validate date parameters with Zod
       const dateQuerySchema = z.object({
@@ -364,7 +496,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Prescription routes
-  app.post('/api/prescriptions', authenticateToken, async (req: any, res) => {
+  app.post('/api/prescriptions', authenticateToken, requirePermission('pharmacy'), async (req: any, res) => {
     try {
       console.log('Received prescription data:', JSON.stringify(req.body, null, 2));
       
@@ -435,7 +567,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/prescriptions/recent', authenticateToken, async (req: any, res) => {
+  app.get('/api/prescriptions/recent', authenticateToken, requirePermission('pharmacy'), async (req: any, res) => {
     try {
       const prescriptions = await storage.getRecentPrescriptions();
       res.json(prescriptions);
@@ -444,7 +576,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/prescriptions/search', authenticateToken, async (req: any, res) => {
+  app.get('/api/prescriptions/search', authenticateToken, requirePermission('pharmacy'), async (req: any, res) => {
     try {
       const { billNumber } = req.query;
       if (!billNumber) {
@@ -458,7 +590,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/prescriptions/:id', authenticateToken, async (req: any, res) => {
+  app.get('/api/prescriptions/:id', authenticateToken, requirePermission('pharmacy'), async (req: any, res) => {
     try {
       const prescription = await storage.getPrescription(req.params.id);
       if (!prescription) {
@@ -471,7 +603,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Discharge summary routes
-  app.post('/api/discharge-summaries', authenticateToken, async (req: any, res) => {
+  app.post('/api/discharge-summaries', authenticateToken, requirePermission('discharge_summary'), async (req: any, res) => {
     try {
       const summaryData = insertDischargeSummarySchema.parse({
         ...req.body,
@@ -487,7 +619,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/discharge-summaries/recent', authenticateToken, async (req: any, res) => {
+  app.get('/api/discharge-summaries/recent', authenticateToken, requirePermission('discharge_summary'), async (req: any, res) => {
     try {
       const summaries = await storage.getRecentDischargeSummaries();
       res.json(summaries);
@@ -496,7 +628,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/discharge-summaries/:id', authenticateToken, async (req: any, res) => {
+  app.get('/api/discharge-summaries/:id', authenticateToken, requirePermission('discharge_summary'), async (req: any, res) => {
     try {
       const summary = await storage.getDischargeSummary(req.params.id);
       if (!summary) {
@@ -509,7 +641,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Medical History Routes
-  app.get('/api/medical-history/:patientId', authenticateToken, async (req: any, res) => {
+  app.get('/api/medical-history/:patientId', authenticateToken, requireAnyPermission(['patient_registration', 'consultation']), async (req: any, res) => {
     try {
       const history = await storage.getMedicalHistoryByPatient(req.params.patientId);
       res.json(history);
@@ -518,7 +650,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/medical-history', authenticateToken, async (req: any, res) => {
+  app.post('/api/medical-history', authenticateToken, requirePermission('patient_registration'), async (req: any, res) => {
     try {
       const entryData = insertMedicalHistorySchema.parse({
         ...req.body,
@@ -535,7 +667,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/medical-history/:id', authenticateToken, async (req: any, res) => {
+  app.put('/api/medical-history/:id', authenticateToken, requirePermission('patient_registration'), async (req: any, res) => {
     try {
       const updates = req.body;
       const entry = await storage.updateMedicalHistoryEntry(req.params.id, updates);
@@ -545,7 +677,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/medical-history/:id', authenticateToken, async (req: any, res) => {
+  app.delete('/api/medical-history/:id', authenticateToken, requirePermission('patient_registration'), async (req: any, res) => {
     try {
       await storage.deleteMedicalHistoryEntry(req.params.id);
       res.status(204).send();
@@ -555,7 +687,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Patient Profile Routes
-  app.get('/api/patient-profile/:patientId', authenticateToken, async (req: any, res) => {
+  app.get('/api/patient-profile/:patientId', authenticateToken, requireAnyPermission(['patient_registration', 'consultation']), async (req: any, res) => {
     try {
       const profile = await storage.getPatientProfile(req.params.patientId);
       res.json(profile || {});
@@ -564,7 +696,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/patient-profile', authenticateToken, async (req: any, res) => {
+  app.post('/api/patient-profile', authenticateToken, requirePermission('patient_registration'), async (req: any, res) => {
     try {
       const profileData = insertPatientProfileSchema.parse(req.body);
       const profile = await storage.createOrUpdatePatientProfile(profileData);
@@ -578,7 +710,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Consultation Routes
-  app.get('/api/consultations/:patientId', authenticateToken, async (req: any, res) => {
+  app.get('/api/consultations/:patientId', authenticateToken, requirePermission('consultation'), async (req: any, res) => {
     try {
       const consultations = await storage.getConsultationsByPatient(req.params.patientId);
       res.json(consultations);
@@ -587,7 +719,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/consultations', authenticateToken, async (req: any, res) => {
+  app.post('/api/consultations', authenticateToken, requirePermission('consultation'), async (req: any, res) => {
     try {
       const consultationData = insertConsultationSchema.parse({
         ...req.body,
@@ -604,7 +736,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/consultations/recent', authenticateToken, async (req: any, res) => {
+  app.get('/api/consultations/recent', authenticateToken, requirePermission('consultation'), async (req: any, res) => {
     try {
       const consultations = await storage.getRecentConsultations();
       res.json(consultations);
@@ -613,7 +745,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/consultation/:id', authenticateToken, async (req: any, res) => {
+  app.get('/api/consultation/:id', authenticateToken, requirePermission('consultation'), async (req: any, res) => {
     try {
       const consultation = await storage.getConsultation(req.params.id);
       if (!consultation) {
@@ -625,7 +757,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/consultations/:id', authenticateToken, async (req: any, res) => {
+  app.put('/api/consultations/:id', authenticateToken, requirePermission('consultation'), async (req: any, res) => {
     try {
       const updates = req.body;
       const consultation = await storage.updateConsultation(req.params.id, updates);
@@ -635,7 +767,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/consultations/:id', authenticateToken, async (req: any, res) => {
+  app.delete('/api/consultations/:id', authenticateToken, requirePermission('consultation'), async (req: any, res) => {
     try {
       await storage.deleteConsultation(req.params.id);
       res.status(204).send();
@@ -645,7 +777,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Lab Test Definitions routes
-  app.get('/api/lab-test-definitions', authenticateToken, async (req: any, res) => {
+  app.get('/api/lab-test-definitions', authenticateToken, requirePermission('laboratory'), async (req: any, res) => {
     try {
       const definitions = await storage.getAllLabTestDefinitions();
       res.json(definitions);
@@ -654,7 +786,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/lab-test-definitions/active', authenticateToken, async (req: any, res) => {
+  app.get('/api/lab-test-definitions/active', authenticateToken, requirePermission('laboratory'), async (req: any, res) => {
     try {
       const definitions = await storage.getActiveLabTestDefinitions();
       res.json(definitions);
@@ -663,7 +795,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/lab-test-definitions', authenticateToken, async (req: any, res) => {
+  app.post('/api/lab-test-definitions', authenticateToken, requirePermission('laboratory'), async (req: any, res) => {
     try {
       const definitionData = insertLabTestDefinitionSchema.parse({
         ...req.body,
@@ -680,7 +812,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/lab-test-definitions/:id', authenticateToken, async (req: any, res) => {
+  app.put('/api/lab-test-definitions/:id', authenticateToken, requirePermission('laboratory'), async (req: any, res) => {
     try {
       const updates = req.body;
       const definition = await storage.updateLabTestDefinition(req.params.id, updates);
@@ -690,7 +822,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/lab-test-definitions/:id', authenticateToken, async (req: any, res) => {
+  app.delete('/api/lab-test-definitions/:id', authenticateToken, requirePermission('laboratory'), async (req: any, res) => {
     try {
       await storage.deleteLabTestDefinition(req.params.id);
       res.status(204).send();
@@ -699,7 +831,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/lab-test-definitions/bulk', authenticateToken, async (req: any, res) => {
+  app.post('/api/lab-test-definitions/bulk', authenticateToken, requirePermission('laboratory'), async (req: any, res) => {
     try {
       const testDefinitions = req.body.testDefinitions;
       
@@ -722,7 +854,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Surgical case sheet routes
-  app.get('/api/surgical-case-sheets/:id', authenticateToken, async (req: any, res) => {
+  app.get('/api/surgical-case-sheets/:id', authenticateToken, requirePermission('surgical_case_sheet'), async (req: any, res) => {
     try {
       const caseSheet = await storage.getSurgicalCaseSheet(req.params.id);
       if (!caseSheet) {
@@ -734,7 +866,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/patients/:patientId/surgical-case-sheets', authenticateToken, async (req: any, res) => {
+  app.get('/api/patients/:patientId/surgical-case-sheets', authenticateToken, requirePermission('surgical_case_sheet'), async (req: any, res) => {
     try {
       const caseSheets = await storage.getSurgicalCaseSheetsByPatient(req.params.patientId);
       res.json(caseSheets);
@@ -743,7 +875,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/surgical-case-sheets', authenticateToken, async (req: any, res) => {
+  app.post('/api/surgical-case-sheets', authenticateToken, requirePermission('surgical_case_sheet'), async (req: any, res) => {
     try {
       const validatedData = insertSurgicalCaseSheetSchema.parse(req.body);
       const caseSheetData = {
@@ -762,7 +894,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/surgical-case-sheets/:id', authenticateToken, async (req: any, res) => {
+  app.put('/api/surgical-case-sheets/:id', authenticateToken, requirePermission('surgical_case_sheet'), async (req: any, res) => {
     try {
       const updates = req.body;
       const caseSheet = await storage.updateSurgicalCaseSheet(req.params.id, updates);
@@ -772,7 +904,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/surgical-case-sheets', authenticateToken, async (req: any, res) => {
+  app.get('/api/surgical-case-sheets', authenticateToken, requirePermission('surgical_case_sheet'), async (req: any, res) => {
     try {
       const caseSheets = await storage.getRecentSurgicalCaseSheets();
       res.json(caseSheets);
@@ -782,7 +914,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Patients Registration endpoints
-  app.post('/api/patients-registration', authenticateToken, async (req: any, res) => {
+  app.post('/api/patients-registration', authenticateToken, requirePermission('patient_registration'), async (req: any, res) => {
     try {
       const validatedData = insertPatientsRegistrationSchema.parse(req.body);
       const registrationData = {
@@ -811,7 +943,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/patients-registration', authenticateToken, async (req: any, res) => {
+  app.get('/api/patients-registration', authenticateToken, requirePermission('patient_registration'), async (req: any, res) => {
     try {
       const registrations = await storage.getAllPatientsRegistrations();
       res.json(registrations);
@@ -821,7 +953,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get next MRU number (MUST BE BEFORE /:id route)
-  app.get('/api/patients-registration/next-mru', authenticateToken, async (req: any, res) => {
+  app.get('/api/patients-registration/next-mru', authenticateToken, requirePermission('patient_registration'), async (req: any, res) => {
     try {
       const nextMRU = await storage.getNextMRUNumber();
       res.json({ mruNumber: nextMRU });
@@ -832,7 +964,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get recent patients
-  app.get('/api/patients-registration/recent', authenticateToken, async (req: any, res) => {
+  app.get('/api/patients-registration/recent', authenticateToken, requirePermission('patient_registration'), async (req: any, res) => {
     try {
       const recentPatients = await storage.getRecentPatientsRegistrations(3);
       res.json(recentPatients);
@@ -843,7 +975,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Search patients registration by MRU number, name, or phone (MUST BE BEFORE /:id route)
-  app.get('/api/patients-registration/search/:query', authenticateToken, async (req: any, res) => {
+  app.get('/api/patients-registration/search/:query', authenticateToken, requirePermission('patient_registration'), async (req: any, res) => {
     try {
       const registrations = await storage.searchPatientsRegistrations(req.params.query);
       res.json(registrations);
@@ -852,7 +984,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/patients-registration/:id', authenticateToken, async (req: any, res) => {
+  app.get('/api/patients-registration/:id', authenticateToken, requirePermission('patient_registration'), async (req: any, res) => {
     try {
       const registration = await storage.getPatientsRegistration(req.params.id);
       if (!registration) {
@@ -864,7 +996,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/patients-registration/:id', authenticateToken, async (req: any, res) => {
+  app.put('/api/patients-registration/:id', authenticateToken, requirePermission('patient_registration'), async (req: any, res) => {
     try {
       const validatedData = insertPatientsRegistrationSchema.parse(req.body);
       const updatedRegistration = await storage.updatePatientsRegistration(req.params.id, validatedData);
@@ -886,7 +1018,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
   // AI Chat endpoints
-  app.post('/api/chat', authenticateToken, async (req: any, res) => {
+  app.post('/api/chat', authenticateToken, requireAnyPermission(['admin_dashboard', 'patient_registration', 'consultation', 'laboratory', 'pharmacy', 'surgical_case_sheet', 'discharge_summary']), async (req: any, res) => {
     try {
       const { message, context } = req.body;
       
@@ -938,7 +1070,7 @@ ${context || 'Nakshatra Hospital HMS assistance'}`;
     }
   });
 
-  app.post('/api/medical-assistant', authenticateToken, async (req: any, res) => {
+  app.post('/api/medical-assistant', authenticateToken, requireAnyPermission(['admin_dashboard', 'patient_registration', 'consultation', 'laboratory', 'pharmacy', 'surgical_case_sheet', 'discharge_summary']), async (req: any, res) => {
     try {
       const { symptoms, patientContext } = req.body;
       
@@ -955,7 +1087,7 @@ ${context || 'Nakshatra Hospital HMS assistance'}`;
   });
 
   // Stats route
-  app.get('/api/stats', authenticateToken, async (req: any, res) => {
+  app.get('/api/stats', authenticateToken, requirePermission('admin_dashboard'), async (req: any, res) => {
     try {
       const stats = await storage.getStats();
       res.json(stats);
@@ -965,7 +1097,7 @@ ${context || 'Nakshatra Hospital HMS assistance'}`;
   });
 
   // Medicine Inventory routes
-  app.get('/api/medicines', authenticateToken, async (req, res) => {
+  app.get('/api/medicines', authenticateToken, requirePermission('pharmacy'), async (req, res) => {
     try {
       const medicines = await storage.getAllMedicines();
       res.json(medicines);
@@ -976,7 +1108,7 @@ ${context || 'Nakshatra Hospital HMS assistance'}`;
   });
 
   // Specific routes MUST come before parametric routes
-  app.get('/api/medicines/active', authenticateToken, async (req, res) => {
+  app.get('/api/medicines/active', authenticateToken, requirePermission('pharmacy'), async (req, res) => {
     try {
       const medicines = await storage.getActiveMedicines();
       res.json(medicines);
@@ -986,7 +1118,7 @@ ${context || 'Nakshatra Hospital HMS assistance'}`;
     }
   });
 
-  app.get('/api/medicines/search', authenticateToken, async (req, res) => {
+  app.get('/api/medicines/search', authenticateToken, requirePermission('pharmacy'), async (req, res) => {
     try {
       const { q } = req.query;
       if (!q || typeof q !== 'string') {
@@ -1002,7 +1134,7 @@ ${context || 'Nakshatra Hospital HMS assistance'}`;
 
 
   // Get single medicine by ID - MUST come after specific routes
-  app.get('/api/medicines/:id', authenticateToken, async (req: any, res) => {
+  app.get('/api/medicines/:id', authenticateToken, requirePermission('pharmacy'), async (req: any, res) => {
     try {
       const { id } = req.params;
       const medicine = await storage.getMedicine(id);
@@ -1018,7 +1150,7 @@ ${context || 'Nakshatra Hospital HMS assistance'}`;
     }
   });
 
-  app.post('/api/medicines', authenticateToken, async (req: any, res) => {
+  app.post('/api/medicines', authenticateToken, requirePermission('pharmacy'), async (req: any, res) => {
     try {
       const medicineData = insertMedicineInventorySchema.parse(req.body);
       const medicine = await storage.createMedicine({
@@ -1035,7 +1167,7 @@ ${context || 'Nakshatra Hospital HMS assistance'}`;
     }
   });
 
-  app.put('/api/medicines/:id', authenticateToken, async (req: any, res) => {
+  app.put('/api/medicines/:id', authenticateToken, requirePermission('pharmacy'), async (req: any, res) => {
     try {
       const { id } = req.params;
       const updates = insertMedicineInventorySchema.partial().parse(req.body);
@@ -1050,7 +1182,7 @@ ${context || 'Nakshatra Hospital HMS assistance'}`;
     }
   });
 
-  app.delete('/api/medicines/:id', authenticateToken, async (req: any, res) => {
+  app.delete('/api/medicines/:id', authenticateToken, requirePermission('pharmacy'), async (req: any, res) => {
     try {
       const { id } = req.params;
       await storage.deleteMedicine(id);
@@ -1062,7 +1194,7 @@ ${context || 'Nakshatra Hospital HMS assistance'}`;
   });
 
   // Medicine returns endpoint - for patients returning medicines to pharmacy
-  app.post('/api/medicines/return', authenticateToken, async (req: any, res) => {
+  app.post('/api/medicines/return', authenticateToken, requirePermission('pharmacy'), async (req: any, res) => {
     try {
       const { medicineId, quantityReturned, notes } = req.body;
       
@@ -1089,7 +1221,7 @@ ${context || 'Nakshatra Hospital HMS assistance'}`;
 
 
   // Hospital Settings routes
-  app.get('/api/hospital-settings', authenticateToken, async (req, res) => {
+  app.get('/api/hospital-settings', authenticateToken, requirePermission('admin_dashboard'), async (req, res) => {
     try {
       const settings = await storage.getHospitalSettings();
       
@@ -1128,7 +1260,7 @@ ${context || 'Nakshatra Hospital HMS assistance'}`;
     }
   });
 
-  app.put('/api/hospital-settings', authenticateToken, async (req: any, res) => {
+  app.put('/api/hospital-settings', authenticateToken, requireAdminRole, async (req: any, res) => {
     try {
       // Map form fields to database fields
       const { name, address, phone, email, website, registrationNumber } = req.body;
@@ -1182,7 +1314,7 @@ ${context || 'Nakshatra Hospital HMS assistance'}`;
   });
 
   // Doctor Management API
-  app.get('/api/doctors', authenticateToken, async (req, res) => {
+  app.get('/api/doctors', authenticateToken, requireAdminRole, async (req, res) => {
     try {
       const doctors = await storage.getAllDoctors();
       res.json(doctors);
@@ -1192,7 +1324,7 @@ ${context || 'Nakshatra Hospital HMS assistance'}`;
     }
   });
 
-  app.post('/api/doctors', authenticateToken, async (req, res) => {
+  app.post('/api/doctors', authenticateToken, requireAdminRole, async (req, res) => {
     try {
       const { isOwner, ...doctorData } = req.body;
       
@@ -1268,7 +1400,7 @@ ${context || 'Nakshatra Hospital HMS assistance'}`;
     }
   });
 
-  app.delete('/api/doctors/:id', authenticateToken, async (req, res) => {
+  app.delete('/api/doctors/:id', authenticateToken, requireAdminRole, async (req, res) => {
     try {
       const { id } = req.params;
       

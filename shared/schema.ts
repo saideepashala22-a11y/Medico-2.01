@@ -16,8 +16,21 @@ export const USER_ROLES = {
 
 export type UserRole = typeof USER_ROLES[keyof typeof USER_ROLES];
 
+// Define valid modules/permissions
+export const VALID_MODULES = [
+  'laboratory', 
+  'pharmacy', 
+  'patient_registration', 
+  'admin_dashboard', 
+  'discharge_summary', 
+  'surgical_case_sheet', 
+  'consultation'
+] as const;
+
+export type ModulePermission = typeof VALID_MODULES[number];
+
 // Role permissions mapping
-export const ROLE_PERMISSIONS = {
+export const ROLE_PERMISSIONS: Record<UserRole, ModulePermission[]> = {
   [USER_ROLES.ADMINISTRATOR]: ['laboratory', 'pharmacy', 'patient_registration', 'admin_dashboard', 'discharge_summary', 'surgical_case_sheet', 'consultation'],
   [USER_ROLES.LAB_TECHNICIAN]: ['laboratory'],
   [USER_ROLES.PHARMACY_STAFF]: ['pharmacy'], 
@@ -25,7 +38,7 @@ export const ROLE_PERMISSIONS = {
   // Legacy role permissions
   [USER_ROLES.DOCTOR]: ['laboratory', 'pharmacy', 'patient_registration', 'discharge_summary', 'surgical_case_sheet', 'consultation'],
   [USER_ROLES.STAFF]: ['patient_registration', 'pharmacy']
-} as const;
+};
 
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
