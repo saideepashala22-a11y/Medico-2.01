@@ -79,7 +79,7 @@ export default function Login() {
 
     setIsLoading(true);
     try {
-      await login(formData.username, formData.password, selectedRole.toLowerCase());
+      await login(formData.username, formData.password);
       toast({
         title: 'Success',
         description: 'Logged in successfully',

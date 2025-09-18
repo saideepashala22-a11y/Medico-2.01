@@ -11,7 +11,7 @@ import { sendOTP, generateOTP } from "./twilioService";
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
 
-// Middleware to verify JWT token
+// Middleware to verify JWT token and check if user is still active
 function authenticateToken(req: any, res: any, next: any) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -20,12 +20,22 @@ function authenticateToken(req: any, res: any, next: any) {
     return res.status(401).json({ message: 'Access token required' });
   }
 
-  jwt.verify(token, JWT_SECRET, (err: any, user: any) => {
+  jwt.verify(token, JWT_SECRET, async (err: any, user: any) => {
     if (err) {
       return res.status(403).json({ message: 'Invalid token' });
     }
-    req.user = user;
-    next();
+    
+    // Check if user is still active
+    try {
+      const currentUser = await storage.getUser(user.id);
+      if (!currentUser || !currentUser.isActive) {
+        return res.status(401).json({ message: 'Account is disabled' });
+      }
+      req.user = user;
+      next();
+    } catch (error) {
+      return res.status(500).json({ message: 'Server error' });
+    }
   });
 }
 
@@ -89,7 +99,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication routes
   app.post('/api/auth/login', async (req, res) => {
     try {
-      const { username, password, role } = req.body;
+      const { username, password } = req.body;
       
       const user = await storage.getUserByUsername(username);
       if (!user) {
@@ -101,8 +111,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: 'Invalid credentials' });
       }
 
-      if (user.role !== role.toUpperCase()) {
-        return res.status(401).json({ message: 'Invalid role' });
+      // Check if user account is active
+      if (!user.isActive) {
+        return res.status(401).json({ message: 'Account is disabled' });
       }
 
       const token = jwt.sign(
