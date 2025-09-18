@@ -1,0 +1,47 @@
+🔧 Project Goal:
+Update the current Replit app to implement a **Role-Based Access Control (RBAC)** system **without disturbing existing functionality**.
+
+🎯 Requirements:
+
+1. After login, users should be redirected to a dashboard that shows only the modules available to their role.
+2. Use these four roles:
+   - `Administrator`: Access to all modules
+   - `Lab Technician`: Access to Laboratory module only
+   - `Pharmacy Staff`: Access to Pharmacy module only
+   - `Receptionist`: Access to Patient Registration module only
+
+3. Existing login functionality must be extended (not replaced) to store and recognize the user's role in session.
+4. Protect all module routes so only authorized roles can access them.
+5. Show a friendly "Access Denied" page for unauthorized users trying to access restricted routes.
+6. Implement clean, professional frontend dashboard UI showing modules relevant to each role only.
+
+📦 Module Mapping:
+
+| Role           | Accessible Modules                      |
+|----------------|-----------------------------------------|
+| Administrator  | Laboratory, Pharmacy, Patient Registration, Admin Dashboard |
+| Lab Technician | Laboratory only                         |
+| Pharmacy Staff | Pharmacy only                           |
+| Receptionist   | Patient Registration only               |
+
+💡 Instructions for Replit AI:
+
+1. Add a `role` field to the user model (DB or static user list).
+2. On successful login, store the user's `role` in the session or token.
+3. Create a middleware or decorator (based on tech stack) called `role_required(roles)` to protect route access.
+4. Modify each module route to check for the proper role using this middleware.
+5. Create a `dashboard.html` (or equivalent) template that dynamically renders buttons/links based on the user’s role.
+6. Include a header or sidebar showing the current user role.
+7. Style the dashboard using Flexbox or CSS Grid for a professional layout. Optional: Use FontAwesome icons.
+
+💻 Example behavior:
+
+- A Lab Technician logs in and sees only a "Laboratory" button.
+- A Receptionist sees only the Patient Registration module.
+- An Administrator sees all modules and dashboards.
+- Unauthorized access to any module redirects to an “Access Denied” page.
+
+⚙️ Keep all existing login functionality and modules untouched — only **extend** it.
+
+🧩 Bonus (if possible):
+- Allow easy addition of future roles and modules (make roles and routes modular).
