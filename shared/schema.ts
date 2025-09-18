@@ -3,11 +3,35 @@ import { pgTable, text, varchar, integer, timestamp, decimal, jsonb, boolean } f
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// Role-Based Access Control (RBAC) constants - defined early for use in schemas
+export const USER_ROLES = {
+  ADMINISTRATOR: 'Administrator',
+  LAB_TECHNICIAN: 'Lab Technician', 
+  PHARMACY_STAFF: 'Pharmacy Staff',
+  RECEPTIONIST: 'Receptionist',
+  // Legacy roles for backward compatibility
+  DOCTOR: 'doctor',
+  STAFF: 'staff'
+} as const;
+
+export type UserRole = typeof USER_ROLES[keyof typeof USER_ROLES];
+
+// Role permissions mapping
+export const ROLE_PERMISSIONS = {
+  [USER_ROLES.ADMINISTRATOR]: ['laboratory', 'pharmacy', 'patient_registration', 'admin_dashboard', 'discharge_summary', 'surgical_case_sheet', 'consultation'],
+  [USER_ROLES.LAB_TECHNICIAN]: ['laboratory'],
+  [USER_ROLES.PHARMACY_STAFF]: ['pharmacy'], 
+  [USER_ROLES.RECEPTIONIST]: ['patient_registration'],
+  // Legacy role permissions
+  [USER_ROLES.DOCTOR]: ['laboratory', 'pharmacy', 'patient_registration', 'discharge_summary', 'surgical_case_sheet', 'consultation'],
+  [USER_ROLES.STAFF]: ['patient_registration', 'pharmacy']
+} as const;
+
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
-  role: text("role").notNull(), // 'doctor' or 'staff'
+  role: text("role").notNull(), // 'Administrator', 'Lab Technician', 'Pharmacy Staff', 'Receptionist' (legacy: 'doctor', 'staff')
   name: text("name").notNull(),
   email: text("email"),
   phoneNumber: text("phone_number"), // For OTP sending
@@ -240,6 +264,15 @@ export const dischargeSummariesRelations = relations(dischargeSummaries, ({ one 
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
+}).extend({
+  role: z.enum([
+    USER_ROLES.ADMINISTRATOR,
+    USER_ROLES.LAB_TECHNICIAN,
+    USER_ROLES.PHARMACY_STAFF,
+    USER_ROLES.RECEPTIONIST,
+    USER_ROLES.DOCTOR,
+    USER_ROLES.STAFF
+  ] as [UserRole, ...UserRole[]])
 });
 
 export const insertPatientSchema = createInsertSchema(patients).omit({
