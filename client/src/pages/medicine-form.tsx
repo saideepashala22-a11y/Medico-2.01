@@ -83,7 +83,17 @@ export default function MedicineForm() {
         description: 'Medicine added successfully',
       });
       queryClient.invalidateQueries({ queryKey: ['/api/medicines'] });
-      navigate('/pharmacy');
+      queryClient.invalidateQueries({ queryKey: ['/api/medicines/active'] });
+      
+      // Check if we came from inventory modal
+      const urlParams = new URLSearchParams(window.location.search);
+      const returnTo = urlParams.get('returnTo');
+      
+      if (returnTo === 'inventory') {
+        navigate('/pharmacy?showInventory=true');
+      } else {
+        navigate('/pharmacy');
+      }
     },
     onError: (error: any) => {
       toast({

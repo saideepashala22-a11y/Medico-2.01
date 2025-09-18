@@ -48,6 +48,18 @@ export default function Pharmacy() {
     notes: ''
   });
 
+  // Check for showInventory query parameter to auto-open inventory modal
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const showInventory = urlParams.get('showInventory');
+    
+    if (showInventory === 'true') {
+      setShowInventoryModal(true);
+      // Clear the query parameter to clean up URL
+      window.history.replaceState({}, '', '/pharmacy');
+    }
+  }, []);
+
   const { data: patientSearchResults } = useQuery({
     queryKey: ['/api/patients/search', patientSearch],
     queryFn: async () => {

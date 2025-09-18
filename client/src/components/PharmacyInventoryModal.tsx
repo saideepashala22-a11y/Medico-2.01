@@ -92,7 +92,7 @@ export function PharmacyInventoryModal({ isOpen, onClose }: PharmacyInventoryMod
   };
 
   const handleAddMedicine = () => {
-    navigate('/pharmacy/medicine/new');
+    navigate('/pharmacy/medicine/new?returnTo=inventory');
   };
 
   const handleDelete = (id: string) => {
