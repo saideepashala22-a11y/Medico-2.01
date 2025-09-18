@@ -694,7 +694,7 @@ export default function Pharmacy() {
             <CardContent className="space-y-6">
               {/* Medicine Return Form */}
               <div className="border rounded-lg p-4">
-                <h3 className="font-medium text-gray-900 mb-4">Return Medicine to Inventory</h3>
+                <h3 className="font-medium text-gray-900 mb-4">Return Medicine</h3>
                 <div className="space-y-4">
                   <div>
                     <Label>Select Medicine</Label>
@@ -746,7 +746,7 @@ export default function Pharmacy() {
                   <Button 
                     onClick={handleProcessReturn}
                     disabled={processMedicineReturnMutation.isPending}
-                    className="w-full bg-medical-primary hover:bg-medical-primary-dark"
+                    className="w-full bg-red-600 hover:bg-red-700 text-white"
                     data-testid="process-return-button"
                   >
                     {processMedicineReturnMutation.isPending ? (
