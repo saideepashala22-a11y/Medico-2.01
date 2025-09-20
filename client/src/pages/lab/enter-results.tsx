@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
@@ -181,11 +182,32 @@ export default function EnterResults() {
     return ranges[testName] || 'Consult reference values';
   };
 
+  // WBC Assessment Options
+  const WBC_ASSESSMENT_OPTIONS = [
+    'within normal limits',
+    'Leucocytosis with Neutrophilic Prominence',
+    'WBC Shows mild leucocytosis',
+    'WBC Shows mild Leucopenia',
+    'Leucopenia with mild lymphocytosis',
+    'Leucopenia with Neutrophilic Prominence',
+    'WBC Show Neutrophilic Prominence',
+    'Leucocytosis with Lymphocytosis',
+    'Leucocytosis with mild Eosinophilia',
+    'Leucocytosis with normal distribution',
+    'Normal in count and distribution',
+    'Neutrophilic predominance',
+    'Neutrophilic leucocytosis',
+    'Leucopenia with normal distribution',
+    'Normal in count with Eosinophilia',
+    'Neutrophilic leucocytosis with shift to left',
+    'Normal in count with Transfer lymphocytes'
+  ];
+
   // Get default values for specific tests
   const getDefaultValue = (testName: string): string => {
     const defaults: Record<string, string> = {
       'RBC\'s': 'NORMOCYTIC',
-      'WBC\'s': 'within limits',
+      'WBC\'s': 'within normal limits',
       'PLATELETS': 'adequate'
     };
     return defaults[testName] || '';
@@ -265,6 +287,102 @@ export default function EnterResults() {
     if (max !== undefined && numValue > max) return true;
     
     return false;
+  };
+
+  // Auto-calculate WBC assessment based on blood values
+  const calculateWBCAssessment = (currentResults: TestResult[]): string => {
+    const wbc = parseFloat(currentResults.find(r => r.testName === 'W.B.C (TOTAL)')?.value || '0');
+    const neutrophils = parseFloat(currentResults.find(r => r.testName === 'NEUTROPHILS')?.value || '0');
+    const lymphocytes = parseFloat(currentResults.find(r => r.testName === 'LYMPHOCYTES')?.value || '0');
+    const eosinophils = parseFloat(currentResults.find(r => r.testName === 'EOSINOPHILS')?.value || '0');
+    const monocytes = parseFloat(currentResults.find(r => r.testName === 'MONOCYTES')?.value || '0');
+    const basophils = parseFloat(currentResults.find(r => r.testName === 'BASOPHILS')?.value || '0');
+
+    // If no values entered yet, return default
+    if (!wbc) return 'within normal limits';
+
+    // Define normal ranges
+    const isWBCHigh = wbc > 11000;
+    const isWBCLow = wbc < 4000;
+    const isWBCNormal = wbc >= 4000 && wbc <= 11000;
+    const isWBCMildHigh = wbc >= 10000 && wbc <= 18000;
+    const isWBCMildLow = wbc >= 3000 && wbc <= 3999;
+
+    // Check if differential is normal
+    const isNeutrophilsNormal = neutrophils >= 50 && neutrophils <= 70;
+    const isLymphocytesNormal = lymphocytes >= 20 && lymphocytes <= 40;
+    const isEosinophilsNormal = eosinophils >= 1 && eosinophils <= 4;
+    const isMonocytesNormal = monocytes >= 2 && monocytes <= 8;
+    const isBasophilsNormal = basophils >= 0.5 && basophils <= 1;
+    
+    const allDifferentialNormal = isNeutrophilsNormal && isLymphocytesNormal && 
+                                 isEosinophilsNormal && isMonocytesNormal && isBasophilsNormal;
+
+    // Apply assessment logic in priority order
+    
+    // High WBC conditions
+    if (isWBCHigh) {
+      if (neutrophils >= 80 && neutrophils <= 90) {
+        return 'Neutrophilic leucocytosis';
+      }
+      if (neutrophils > 70) {
+        return 'Leucocytosis with Neutrophilic Prominence';
+      }
+      if (lymphocytes >= 41 && lymphocytes <= 70) {
+        return 'Leucocytosis with Lymphocytosis';
+      }
+      if (eosinophils >= 8 && eosinophils <= 10) {
+        return 'Leucocytosis with mild Eosinophilia';
+      }
+      if (allDifferentialNormal) {
+        return 'Leucocytosis with normal distribution';
+      }
+    }
+    
+    // Mild high WBC
+    if (isWBCMildHigh && !isWBCHigh) {
+      return 'WBC Shows mild leucocytosis';
+    }
+    
+    // Low WBC conditions
+    if (isWBCLow) {
+      if (lymphocytes > 45) {
+        return 'Leucopenia with mild lymphocytosis';
+      }
+      if (neutrophils > 70) {
+        return 'Leucopenia with Neutrophilic Prominence';
+      }
+      if (allDifferentialNormal) {
+        return 'Leucopenia with normal distribution';
+      }
+    }
+    
+    // Mild low WBC
+    if (isWBCMildLow) {
+      return 'WBC Shows mild Leucopenia';
+    }
+    
+    // Normal WBC conditions
+    if (isWBCNormal) {
+      if (neutrophils >= 80 && neutrophils <= 90) {
+        return 'Neutrophilic predominance';
+      }
+      if (neutrophils > 70) {
+        return 'WBC Show Neutrophilic Prominence';
+      }
+      if (eosinophils >= 10 && eosinophils <= 15) {
+        return 'Normal in count with Eosinophilia';
+      }
+      if (lymphocytes >= 40 && lymphocytes <= 45) {
+        return 'Normal in count with Transfer lymphocytes';
+      }
+      if (allDifferentialNormal) {
+        return 'Normal in count and distribution';
+      }
+    }
+    
+    // Default fallback
+    return 'within normal limits';
   };
 
   // Determine result status based on value and normal range
@@ -386,6 +504,20 @@ export default function EnterResults() {
               ...updated[rbcIndex],
               value: calculatedRBC,
               status: determineStatus(calculatedRBC, 'Total R.B.C COUNT')
+            };
+          }
+        }
+        
+        // Auto-calculate WBC assessment when WBC or differential values change
+        const wbcRelatedTests = ['W.B.C (TOTAL)', 'NEUTROPHILS', 'LYMPHOCYTES', 'EOSINOPHILS', 'MONOCYTES', 'BASOPHILS'];
+        if (wbcRelatedTests.includes(updated[index].testName)) {
+          const wbcIndex = updated.findIndex(result => result.testName === 'WBC\'s');
+          if (wbcIndex !== -1) {
+            const calculatedAssessment = calculateWBCAssessment(updated);
+            updated[wbcIndex] = {
+              ...updated[wbcIndex],
+              value: calculatedAssessment,
+              status: 'normal'
             };
           }
         }
@@ -792,43 +924,64 @@ export default function EnterResults() {
                                     Auto-calculated
                                   </span>
                                 )}
+                                {result.testName === 'WBC\'s' && (
+                                  <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                                    Auto-assessed
+                                  </span>
+                                )}
                               </Label>
-                              <Input
-                                id={`value-${index}`}
-                                type={
-                                  (result.testName === 'RBC\'s' || result.testName === 'WBC\'s' || 
-                                   result.testName === 'PLATELETS') 
-                                    ? 'text' : 'number'
-                                }
-                                step="0.01"
-                                value={result.value}
-                                onChange={(e) => updateResult(index, 'value', e.target.value)}
-                                placeholder={
-                                  result.testName === 'P.C.V' ? 'Will auto-calculate from Hb' :
-                                  result.testName === 'Total R.B.C COUNT' ? 'Will auto-calculate from Hb' :
-                                  result.testName === 'MCV' ? 'Auto-calculates from PCV & RBC' :
-                                  result.testName === 'MCH' ? 'Auto-calculates from Hb & RBC' :
-                                  result.testName === 'MCHC' ? 'Auto-calculates from Hb & PCV' :
-                                  result.testName === 'RBC\'s' ? 'RBC morphology' :
-                                  result.testName === 'WBC\'s' ? 'WBC assessment' :
-                                  result.testName === 'PLATELETS' ? 'Platelet adequacy' :
-                                  'Enter value'
-                                }
-                                className={`mt-1 ${
-                                  (result.testName === 'P.C.V' || result.testName === 'Total R.B.C COUNT' || 
-                                   result.testName === 'MCV' || result.testName === 'MCH' || result.testName === 'MCHC') 
-                                    ? 'bg-blue-50 border-blue-200' 
-                                    : ''
-                                } ${
-                                  isValueAbnormal(result.value, result.normalRange, patient?.gender) 
-                                    ? 'font-bold text-red-700' 
-                                    : 'font-normal'
-                                }`}
-                                readOnly={
-                                  result.testName === 'P.C.V' || result.testName === 'Total R.B.C COUNT' || 
-                                  result.testName === 'MCV' || result.testName === 'MCH' || result.testName === 'MCHC'
-                                }
-                              />
+                              {result.testName === 'WBC\'s' ? (
+                                <Select 
+                                  value={result.value} 
+                                  onValueChange={(value) => updateResult(index, 'value', value)}
+                                >
+                                  <SelectTrigger className="mt-1">
+                                    <SelectValue placeholder="Select WBC assessment" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {WBC_ASSESSMENT_OPTIONS.map((option) => (
+                                      <SelectItem key={option} value={option}>
+                                        {option}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              ) : (
+                                <Input
+                                  id={`value-${index}`}
+                                  type={
+                                    (result.testName === 'RBC\'s' || result.testName === 'PLATELETS') 
+                                      ? 'text' : 'number'
+                                  }
+                                  step="0.01"
+                                  value={result.value}
+                                  onChange={(e) => updateResult(index, 'value', e.target.value)}
+                                  placeholder={
+                                    result.testName === 'P.C.V' ? 'Will auto-calculate from Hb' :
+                                    result.testName === 'Total R.B.C COUNT' ? 'Will auto-calculate from Hb' :
+                                    result.testName === 'MCV' ? 'Auto-calculates from PCV & RBC' :
+                                    result.testName === 'MCH' ? 'Auto-calculates from Hb & RBC' :
+                                    result.testName === 'MCHC' ? 'Auto-calculates from Hb & PCV' :
+                                    result.testName === 'RBC\'s' ? 'RBC morphology' :
+                                    result.testName === 'PLATELETS' ? 'Platelet adequacy' :
+                                    'Enter value'
+                                  }
+                                  className={`mt-1 ${
+                                    (result.testName === 'P.C.V' || result.testName === 'Total R.B.C COUNT' || 
+                                     result.testName === 'MCV' || result.testName === 'MCH' || result.testName === 'MCHC') 
+                                      ? 'bg-blue-50 border-blue-200' 
+                                      : ''
+                                  } ${
+                                    isValueAbnormal(result.value, result.normalRange, patient?.gender) 
+                                      ? 'font-bold text-red-700' 
+                                      : 'font-normal'
+                                  }`}
+                                  readOnly={
+                                    result.testName === 'P.C.V' || result.testName === 'Total R.B.C COUNT' || 
+                                    result.testName === 'MCV' || result.testName === 'MCH' || result.testName === 'MCHC'
+                                  }
+                                />
+                              )}
                             </div>
                             {(result.testName !== 'RBC\'s' && result.testName !== 'WBC\'s' && 
                               result.testName !== 'PLATELETS') && (
