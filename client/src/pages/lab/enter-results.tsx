@@ -73,8 +73,7 @@ export default function EnterResults() {
     'PLATELETS COUNT',
     'RBC\'s',
     'WBC\'s', 
-    'PLATELETS',
-    'SAMPLE TYPE'
+    'PLATELETS'
   ];
 
   // Initialize results based on selected tests
@@ -166,7 +165,6 @@ export default function EnterResults() {
       'RBC\'s': '',
       'WBC\'s': '', 
       'PLATELETS': '',
-      'SAMPLE TYPE': 'Collection method',
       'FBS (Fasting Blood Sugar)': '70-100 mg/dL',
       'RBS (Random Blood Sugar)': '<140 mg/dL',
       'SERUM CREATININE': '0.6-1.2 mg/dL',
@@ -188,8 +186,7 @@ export default function EnterResults() {
     const defaults: Record<string, string> = {
       'RBC\'s': 'NORMOCYTIC',
       'WBC\'s': 'within limits',
-      'PLATELETS': 'adequate',
-      'SAMPLE TYPE': 'whole blood EDTA'
+      'PLATELETS': 'adequate'
     };
     return defaults[testName] || '';
   };
@@ -273,7 +270,7 @@ export default function EnterResults() {
   // Determine result status based on value and normal range
   const determineStatus = (value: string, testName: string): 'normal' | 'high' | 'low' | 'critical' => {
     // For text-based parameters, always return normal
-    if (testName === 'RBC\'s' || testName === 'WBC\'s' || testName === 'PLATELETS' || testName === 'SAMPLE TYPE') {
+    if (testName === 'RBC\'s' || testName === 'WBC\'s' || testName === 'PLATELETS') {
       return 'normal';
     }
     
@@ -457,7 +454,7 @@ export default function EnterResults() {
       } else {
         // Only check for numeric values if it's not a text-based parameter
         const isTextBasedParameter = result.testName === 'RBC\'s' || result.testName === 'WBC\'s' || 
-                                    result.testName === 'PLATELETS' || result.testName === 'SAMPLE TYPE';
+                                    result.testName === 'PLATELETS';
         
         if (!isTextBasedParameter && isNaN(parseFloat(result.value))) {
           errors.push(`Test result for "${result.testName}" must be a valid number`);
@@ -800,7 +797,7 @@ export default function EnterResults() {
                                 id={`value-${index}`}
                                 type={
                                   (result.testName === 'RBC\'s' || result.testName === 'WBC\'s' || 
-                                   result.testName === 'PLATELETS' || result.testName === 'SAMPLE TYPE') 
+                                   result.testName === 'PLATELETS') 
                                     ? 'text' : 'number'
                                 }
                                 step="0.01"
@@ -815,7 +812,6 @@ export default function EnterResults() {
                                   result.testName === 'RBC\'s' ? 'RBC morphology' :
                                   result.testName === 'WBC\'s' ? 'WBC assessment' :
                                   result.testName === 'PLATELETS' ? 'Platelet adequacy' :
-                                  result.testName === 'SAMPLE TYPE' ? 'Sample collection type' :
                                   'Enter value'
                                 }
                                 className={`mt-1 ${
