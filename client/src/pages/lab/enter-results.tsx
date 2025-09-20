@@ -823,6 +823,10 @@ export default function EnterResults() {
                                    result.testName === 'MCV' || result.testName === 'MCH' || result.testName === 'MCHC') 
                                     ? 'bg-blue-50 border-blue-200' 
                                     : ''
+                                } ${
+                                  isValueAbnormal(result.value, result.normalRange, patient?.gender) 
+                                    ? 'font-bold text-red-700' 
+                                    : 'font-normal'
                                 }`}
                                 readOnly={
                                   result.testName === 'P.C.V' || result.testName === 'Total R.B.C COUNT' || 
@@ -946,9 +950,36 @@ export default function EnterResults() {
                       {results.map((result, index) => (
                         <tr key={index} className="hover:bg-gray-50">
                           <td className="border border-gray-300 px-4 py-2 font-medium">{result.testName}</td>
-                          <td className="border border-gray-300 px-4 py-2">{result.value}</td>
+                          <td className={`border border-gray-300 px-4 py-2 ${
+                            isValueAbnormal(result.value, result.normalRange, patient?.gender) 
+                              ? 'font-bold text-red-700' 
+                              : 'font-normal'
+                          }`}>{result.value}</td>
                           <td className="border border-gray-300 px-4 py-2">{result.unit}</td>
-                          <td className="border border-gray-300 px-4 py-2 text-sm">{result.normalRange}</td>
+                          <td className="border border-gray-300 px-4 py-2 text-sm">
+                            {(() => {
+                              const normalRange = result.normalRange;
+                              // Show gender-specific range if applicable
+                              if (normalRange.includes('|') && patient?.gender) {
+                                const ranges = normalRange.split('|');
+                                const genderPrefix = patient.gender.toLowerCase() === 'male' ? '(M)' : '(F)';
+                                const matchingRange = ranges.find(range => range.trim().startsWith(genderPrefix));
+                                if (matchingRange) {
+                                  return (
+                                    <div>
+                                      <div className="font-semibold text-blue-700">
+                                        {matchingRange.trim()}
+                                      </div>
+                                      <div className="text-xs text-gray-500 mt-1">
+                                        Other: {ranges.find(r => !r.trim().startsWith(genderPrefix))?.trim()}
+                                      </div>
+                                    </div>
+                                  );
+                                }
+                              }
+                              return normalRange;
+                            })()} 
+                          </td>
                           <td className="border border-gray-300 px-4 py-2">
                             <Badge 
                               className={
