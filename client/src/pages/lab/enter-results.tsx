@@ -184,30 +184,30 @@ export default function EnterResults() {
 
   // WBC Assessment Options
   const WBC_ASSESSMENT_OPTIONS = [
-    'within normal limits',
-    'Leucocytosis with Neutrophilic Prominence',
-    'WBC Shows mild leucocytosis',
-    'WBC Shows mild Leucopenia',
-    'Leucopenia with mild lymphocytosis',
-    'Leucopenia with Neutrophilic Prominence',
-    'WBC Show Neutrophilic Prominence',
-    'Leucocytosis with Lymphocytosis',
-    'Leucocytosis with mild Eosinophilia',
-    'Leucocytosis with normal distribution',
-    'Normal in count and distribution',
-    'Neutrophilic predominance',
-    'Neutrophilic leucocytosis',
-    'Leucopenia with normal distribution',
-    'Normal in count with Eosinophilia',
-    'Neutrophilic leucocytosis with shift to left',
-    'Normal in count with Transfer lymphocytes'
+    'WITHIN NORMAL LIMITS',
+    'LEUCOCYTOSIS WITH NEUTROPHILIC PROMINENCE',
+    'WBC SHOWS MILD LEUCOCYTOSIS',
+    'WBC SHOWS MILD LEUCOPENIA',
+    'LEUCOPENIA WITH MILD LYMPHOCYTOSIS',
+    'LEUCOPENIA WITH NEUTROPHILIC PROMINENCE',
+    'WBC SHOW NEUTROPHILIC PROMINENCE',
+    'LEUCOCYTOSIS WITH LYMPHOCYTOSIS',
+    'LEUCOCYTOSIS WITH MILD EOSINOPHILIA',
+    'LEUCOCYTOSIS WITH NORMAL DISTRIBUTION',
+    'NORMAL IN COUNT AND DISTRIBUTION',
+    'NEUTROPHILIC PREDOMINANCE',
+    'NEUTROPHILIC LEUCOCYTOSIS',
+    'LEUCOPENIA WITH NORMAL DISTRIBUTION',
+    'NORMAL IN COUNT WITH EOSINOPHILIA',
+    'NEUTROPHILIC LEUCOCYTOSIS WITH SHIFT TO LEFT',
+    'NORMAL IN COUNT WITH TRANSFER LYMPHOCYTES'
   ];
 
   // Get default values for specific tests
   const getDefaultValue = (testName: string): string => {
     const defaults: Record<string, string> = {
       'RBC\'s': 'NORMOCYTIC',
-      'WBC\'s': 'within normal limits',
+      'WBC\'s': 'WITHIN NORMAL LIMITS',
       'PLATELETS': 'adequate'
     };
     return defaults[testName] || '';
@@ -299,7 +299,7 @@ export default function EnterResults() {
     const basophils = parseFloat(currentResults.find(r => r.testName === 'BASOPHILS')?.value || '0');
 
     // If no values entered yet, return default
-    if (!wbc) return 'within normal limits';
+    if (!wbc) return 'WITHIN NORMAL LIMITS';
 
     // Define normal ranges
     const isWBCHigh = wbc > 11000;
@@ -323,66 +323,66 @@ export default function EnterResults() {
     // High WBC conditions
     if (isWBCHigh) {
       if (neutrophils >= 80 && neutrophils <= 90) {
-        return 'Neutrophilic leucocytosis';
+        return 'NEUTROPHILIC LEUCOCYTOSIS';
       }
       if (neutrophils > 70) {
-        return 'Leucocytosis with Neutrophilic Prominence';
+        return 'LEUCOCYTOSIS WITH NEUTROPHILIC PROMINENCE';
       }
       if (lymphocytes >= 41 && lymphocytes <= 70) {
-        return 'Leucocytosis with Lymphocytosis';
+        return 'LEUCOCYTOSIS WITH LYMPHOCYTOSIS';
       }
       if (eosinophils >= 8 && eosinophils <= 10) {
-        return 'Leucocytosis with mild Eosinophilia';
+        return 'LEUCOCYTOSIS WITH MILD EOSINOPHILIA';
       }
       if (allDifferentialNormal) {
-        return 'Leucocytosis with normal distribution';
+        return 'LEUCOCYTOSIS WITH NORMAL DISTRIBUTION';
       }
     }
     
     // Mild high WBC
     if (isWBCMildHigh && !isWBCHigh) {
-      return 'WBC Shows mild leucocytosis';
+      return 'WBC SHOWS MILD LEUCOCYTOSIS';
     }
     
     // Low WBC conditions
     if (isWBCLow) {
       if (lymphocytes > 45) {
-        return 'Leucopenia with mild lymphocytosis';
+        return 'LEUCOPENIA WITH MILD LYMPHOCYTOSIS';
       }
       if (neutrophils > 70) {
-        return 'Leucopenia with Neutrophilic Prominence';
+        return 'LEUCOPENIA WITH NEUTROPHILIC PROMINENCE';
       }
       if (allDifferentialNormal) {
-        return 'Leucopenia with normal distribution';
+        return 'LEUCOPENIA WITH NORMAL DISTRIBUTION';
       }
     }
     
     // Mild low WBC
     if (isWBCMildLow) {
-      return 'WBC Shows mild Leucopenia';
+      return 'WBC SHOWS MILD LEUCOPENIA';
     }
     
     // Normal WBC conditions
     if (isWBCNormal) {
       if (neutrophils >= 80 && neutrophils <= 90) {
-        return 'Neutrophilic predominance';
+        return 'NEUTROPHILIC PREDOMINANCE';
       }
       if (neutrophils > 70) {
-        return 'WBC Show Neutrophilic Prominence';
+        return 'WBC SHOW NEUTROPHILIC PROMINENCE';
       }
       if (eosinophils >= 10 && eosinophils <= 15) {
-        return 'Normal in count with Eosinophilia';
+        return 'NORMAL IN COUNT WITH EOSINOPHILIA';
       }
       if (lymphocytes >= 40 && lymphocytes <= 45) {
-        return 'Normal in count with Transfer lymphocytes';
+        return 'NORMAL IN COUNT WITH TRANSFER LYMPHOCYTES';
       }
       if (allDifferentialNormal) {
-        return 'Normal in count and distribution';
+        return 'NORMAL IN COUNT AND DISTRIBUTION';
       }
     }
     
     // Default fallback
-    return 'within normal limits';
+    return 'WITHIN NORMAL LIMITS';
   };
 
   // Determine result status based on value and normal range
