@@ -367,9 +367,9 @@ export default function LabReport() {
 
                 // Unit - convert old formats to new formats, skip units for descriptive assessments
                 const isDescriptiveTest =
-                  testResult.testName === "a. RBC's" ||
-                  testResult.testName === "b. WBC's" ||
-                  testResult.testName === "c. PLATELETS";
+                  testResult.testName === "RBC's" ||
+                  testResult.testName === "WBC's" ||
+                  testResult.testName === "PLATELETS";
 
                 if (!isDescriptiveTest) {
                   let displayUnit = testResult.unit || "units";

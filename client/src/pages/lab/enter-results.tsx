@@ -71,9 +71,9 @@ export default function EnterResults() {
     'MONOCYTES',
     'BASOPHILS',
     'PLATELETS COUNT',
-    'a. RBC\'s',
-    'b. WBC\'s', 
-    'c. PLATELETS',
+    'RBC\'s',
+    'WBC\'s', 
+    'PLATELETS',
     'SAMPLE TYPE'
   ];
 
@@ -163,9 +163,9 @@ export default function EnterResults() {
       'MONOCYTES': '2-8%',
       'BASOPHILS': '0.5-1%',
       'PLATELETS COUNT': '1.5-4.5 Lakhs/Cumm',
-      'a. RBC\'s': '',
-      'b. WBC\'s': '', 
-      'c. PLATELETS': '',
+      'RBC\'s': '',
+      'WBC\'s': '', 
+      'PLATELETS': '',
       'SAMPLE TYPE': 'Collection method',
       'FBS (Fasting Blood Sugar)': '70-100 mg/dL',
       'RBS (Random Blood Sugar)': '<140 mg/dL',
@@ -186,9 +186,9 @@ export default function EnterResults() {
   // Get default values for specific tests
   const getDefaultValue = (testName: string): string => {
     const defaults: Record<string, string> = {
-      'a. RBC\'s': 'NORMOCYTIC',
-      'b. WBC\'s': 'within limits',
-      'c. PLATELETS': 'adequate',
+      'RBC\'s': 'NORMOCYTIC',
+      'WBC\'s': 'within limits',
+      'PLATELETS': 'adequate',
       'SAMPLE TYPE': 'whole blood EDTA'
     };
     return defaults[testName] || '';
@@ -273,7 +273,7 @@ export default function EnterResults() {
   // Determine result status based on value and normal range
   const determineStatus = (value: string, testName: string): 'normal' | 'high' | 'low' | 'critical' => {
     // For text-based parameters, always return normal
-    if (testName === 'a. RBC\'s' || testName === 'b. WBC\'s' || testName === 'c. PLATELETS' || testName === 'SAMPLE TYPE') {
+    if (testName === 'RBC\'s' || testName === 'WBC\'s' || testName === 'PLATELETS' || testName === 'SAMPLE TYPE') {
       return 'normal';
     }
     
@@ -456,8 +456,8 @@ export default function EnterResults() {
         errors.push(`Test result for "${result.testName}" is required`);
       } else {
         // Only check for numeric values if it's not a text-based parameter
-        const isTextBasedParameter = result.testName === 'a. RBC\'s' || result.testName === 'b. WBC\'s' || 
-                                    result.testName === 'c. PLATELETS' || result.testName === 'SAMPLE TYPE';
+        const isTextBasedParameter = result.testName === 'RBC\'s' || result.testName === 'WBC\'s' || 
+                                    result.testName === 'PLATELETS' || result.testName === 'SAMPLE TYPE';
         
         if (!isTextBasedParameter && isNaN(parseFloat(result.value))) {
           errors.push(`Test result for "${result.testName}" must be a valid number`);
@@ -783,8 +783,8 @@ export default function EnterResults() {
                         </CardHeader>
                         <CardContent className="p-6">
                           <div className={`grid gap-4 ${
-                            (result.testName === 'a. RBC\'s' || result.testName === 'b. WBC\'s' || 
-                             result.testName === 'c. PLATELETS') ? 'grid-cols-2' : 'grid-cols-3'
+                            (result.testName === 'RBC\'s' || result.testName === 'WBC\'s' || 
+                             result.testName === 'PLATELETS') ? 'grid-cols-2' : 'grid-cols-3'
                           }`}>
                             <div>
                               <Label htmlFor={`value-${index}`}>
@@ -799,8 +799,8 @@ export default function EnterResults() {
                               <Input
                                 id={`value-${index}`}
                                 type={
-                                  (result.testName === 'a. RBC\'s' || result.testName === 'b. WBC\'s' || 
-                                   result.testName === 'c. PLATELETS' || result.testName === 'SAMPLE TYPE') 
+                                  (result.testName === 'RBC\'s' || result.testName === 'WBC\'s' || 
+                                   result.testName === 'PLATELETS' || result.testName === 'SAMPLE TYPE') 
                                     ? 'text' : 'number'
                                 }
                                 step="0.01"
@@ -812,9 +812,9 @@ export default function EnterResults() {
                                   result.testName === 'MCV' ? 'Auto-calculates from PCV & RBC' :
                                   result.testName === 'MCH' ? 'Auto-calculates from Hb & RBC' :
                                   result.testName === 'MCHC' ? 'Auto-calculates from Hb & PCV' :
-                                  result.testName === 'a. RBC\'s' ? 'RBC morphology' :
-                                  result.testName === 'b. WBC\'s' ? 'WBC assessment' :
-                                  result.testName === 'c. PLATELETS' ? 'Platelet adequacy' :
+                                  result.testName === 'RBC\'s' ? 'RBC morphology' :
+                                  result.testName === 'WBC\'s' ? 'WBC assessment' :
+                                  result.testName === 'PLATELETS' ? 'Platelet adequacy' :
                                   result.testName === 'SAMPLE TYPE' ? 'Sample collection type' :
                                   'Enter value'
                                 }
@@ -834,8 +834,8 @@ export default function EnterResults() {
                                 }
                               />
                             </div>
-                            {(result.testName !== 'a. RBC\'s' && result.testName !== 'b. WBC\'s' && 
-                              result.testName !== 'c. PLATELETS') && (
+                            {(result.testName !== 'RBC\'s' && result.testName !== 'WBC\'s' && 
+                              result.testName !== 'PLATELETS') && (
                               <div>
                                 <Label htmlFor={`unit-${index}`}>Unit</Label>
                                 <Input
@@ -847,8 +847,8 @@ export default function EnterResults() {
                                 />
                               </div>
                             )}
-                            {(result.testName !== 'a. RBC\'s' && result.testName !== 'b. WBC\'s' && 
-                              result.testName !== 'c. PLATELETS') && (
+                            {(result.testName !== 'RBC\'s' && result.testName !== 'WBC\'s' && 
+                              result.testName !== 'PLATELETS') && (
                               <div>
                                 <Label>Normal Range</Label>
                                 <p className="text-sm text-gray-600 pt-3">{result.normalRange}</p>
@@ -960,8 +960,8 @@ export default function EnterResults() {
                           }`}>{result.value}</td>
                           <td className="border border-gray-300 px-4 py-2">{result.unit}</td>
                           <td className="border border-gray-300 px-4 py-2 text-sm">
-                            {(result.testName === 'a. RBC\'s' || result.testName === 'b. WBC\'s' || 
-                              result.testName === 'c. PLATELETS') ? (
+                            {(result.testName === 'RBC\'s' || result.testName === 'WBC\'s' || 
+                              result.testName === 'PLATELETS') ? (
                               <span className="text-gray-400 italic">-</span>
                             ) : (() => {
                               const normalRange = result.normalRange;
