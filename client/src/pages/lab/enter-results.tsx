@@ -163,9 +163,9 @@ export default function EnterResults() {
       'MONOCYTES': '2-8%',
       'BASOPHILS': '0.5-1%',
       'PLATELETS COUNT': '1.5-4.5 Lakhs/Cumm',
-      'a. RBC\'s': 'Morphological assessment',
-      'b. WBC\'s': 'Functional assessment', 
-      'c. PLATELETS': 'Adequacy assessment',
+      'a. RBC\'s': '',
+      'b. WBC\'s': '', 
+      'c. PLATELETS': '',
       'SAMPLE TYPE': 'Collection method',
       'FBS (Fasting Blood Sugar)': '70-100 mg/dL',
       'RBS (Random Blood Sugar)': '<140 mg/dL',
@@ -847,10 +847,13 @@ export default function EnterResults() {
                                 />
                               </div>
                             )}
-                            <div>
-                              <Label>Normal Range</Label>
-                              <p className="text-sm text-gray-600 pt-3">{result.normalRange}</p>
-                            </div>
+                            {(result.testName !== 'a. RBC\'s' && result.testName !== 'b. WBC\'s' && 
+                              result.testName !== 'c. PLATELETS') && (
+                              <div>
+                                <Label>Normal Range</Label>
+                                <p className="text-sm text-gray-600 pt-3">{result.normalRange}</p>
+                              </div>
+                            )}
                           </div>
                         </CardContent>
                       </Card>
@@ -957,7 +960,10 @@ export default function EnterResults() {
                           }`}>{result.value}</td>
                           <td className="border border-gray-300 px-4 py-2">{result.unit}</td>
                           <td className="border border-gray-300 px-4 py-2 text-sm">
-                            {(() => {
+                            {(result.testName === 'a. RBC\'s' || result.testName === 'b. WBC\'s' || 
+                              result.testName === 'c. PLATELETS') ? (
+                              <span className="text-gray-400 italic">-</span>
+                            ) : (() => {
                               const normalRange = result.normalRange;
                               // Show gender-specific range if applicable
                               if (normalRange.includes('|') && patient?.gender) {
