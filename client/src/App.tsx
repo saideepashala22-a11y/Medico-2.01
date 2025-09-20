@@ -6,8 +6,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/use-auth-simple";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-import { Suspense, lazy } from "react";
-import { Loader2 } from "lucide-react";
+import { Suspense, lazy, useState, useEffect } from "react";
+import { Loader2, Stethoscope, Pill, TestTube, UserCheck, Heart, Activity, Syringe, Microscope } from "lucide-react";
 
 // Lazy load all page components for better performance
 const NotFound = lazy(() => import("@/pages/not-found"));
@@ -31,20 +31,98 @@ const MedicineForm = lazy(() => import("@/pages/medicine-form"));
 const PatientsListPage = lazy(() => import("@/pages/patients-list"));
 const LabRevenuePage = lazy(() => import("@/pages/lab-revenue"));
 
-// Mobile-optimized loading component
+// Professional medical loading component with cycling icons
 function LazyLoadingSpinner() {
+  const medicalIcons = [
+    { icon: Stethoscope, label: "Doctor", color: "text-blue-500" },
+    { icon: Pill, label: "Pharmacy", color: "text-green-500" },
+    { icon: TestTube, label: "Laboratory", color: "text-purple-500" },
+    { icon: UserCheck, label: "Patient", color: "text-orange-500" },
+    { icon: Heart, label: "Cardiology", color: "text-red-500" },
+    { icon: Activity, label: "Monitoring", color: "text-cyan-500" },
+    { icon: Syringe, label: "Treatment", color: "text-pink-500" },
+    { icon: Microscope, label: "Pathology", color: "text-indigo-500" }
+  ];
+
+  const [currentIconIndex, setCurrentIconIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const iconInterval = setInterval(() => {
+      setCurrentIconIndex((prev) => (prev + 1) % medicalIcons.length);
+    }, 800);
+
+    const progressInterval = setInterval(() => {
+      setProgress((prev) => (prev + 2) % 100);
+    }, 50);
+
+    return () => {
+      clearInterval(iconInterval);
+      clearInterval(progressInterval);
+    };
+  }, [medicalIcons.length]);
+
+  const CurrentIcon = medicalIcons[currentIconIndex].icon;
+  const currentLabel = medicalIcons[currentIconIndex].label;
+  const currentColor = medicalIcons[currentIconIndex].color;
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <div className="text-center space-y-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900">
+      <div className="text-center space-y-6 max-w-sm mx-auto px-6">
+        {/* Main Icon Animation */}
         <div className="relative">
-          <Loader2 className="h-12 w-12 animate-spin text-medical-blue mx-auto" />
-          <div className="absolute inset-0 h-12 w-12 rounded-full border-4 border-medical-blue/20 mx-auto animate-pulse"></div>
-        </div>
-        <div className="space-y-2">
-          <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">Loading...</p>
-          <div className="w-48 h-2 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-medical-blue to-indigo-500 rounded-full animate-pulse w-3/4 transition-all duration-1000"></div>
+          <div className="absolute inset-0 h-16 w-16 mx-auto">
+            <div className="h-full w-full rounded-full border-4 border-gray-200 dark:border-gray-700"></div>
+            <div 
+              className="absolute top-0 left-0 h-full w-full rounded-full border-4 border-medical-blue border-t-transparent animate-spin"
+              style={{ animationDuration: '1.5s' }}
+            ></div>
           </div>
+          <div className={`relative z-10 transition-all duration-500 transform ${currentColor}`}>
+            <CurrentIcon className="h-16 w-16 mx-auto animate-pulse" />
+          </div>
+        </div>
+
+        {/* Department Label */}
+        <div className="space-y-2">
+          <p className="text-xl font-bold text-gray-800 dark:text-gray-200 transition-all duration-500">
+            {currentLabel}
+          </p>
+          <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+            NAKSHATRA HOSPITAL
+          </p>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="w-64 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto overflow-hidden">
+          <div 
+            className="h-full bg-gradient-to-r from-medical-blue via-cyan-500 to-blue-600 rounded-full transition-all duration-100 ease-out"
+            style={{ width: `${progress}%` }}
+          ></div>
+        </div>
+
+        {/* Loading Text */}
+        <p className="text-sm text-gray-500 dark:text-gray-400 animate-pulse">
+          Loading Hospital Management System...
+        </p>
+
+        {/* Medical Icons Preview */}
+        <div className="flex justify-center space-x-2 mt-4">
+          {medicalIcons.map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={index}
+                className={`transition-all duration-300 ${
+                  index === currentIconIndex 
+                    ? 'scale-125 opacity-100' 
+                    : 'scale-75 opacity-40'
+                }`}
+              >
+                <Icon className={`h-4 w-4 ${item.color}`} />
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
