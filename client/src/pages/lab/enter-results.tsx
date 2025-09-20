@@ -203,10 +203,23 @@ export default function EnterResults() {
     'NORMAL IN COUNT WITH TRANSFER LYMPHOCYTES'
   ];
 
+  // RBC Assessment Options
+  const RBC_ASSESSMENT_OPTIONS = [
+    'NORMOCYTIC / NORMOCHROMIC',
+    'NORMOCYTIC / HYPOCHROMIC',
+    'NORMOCYTIC / MILD HYPOCHROMIC',
+    'MICROCYTIC / HYPOCHROMIC',
+    'NORMOCYTIC HYPOCHROMIC MILD ANISOCYTOSIS',
+    'MICROCYTIC HYPOCHROMIC MILD ANISOCYTOSIS',
+    'NORMOCYTIC HYPOCHROMIC FEW MICROCYTES',
+    'NORMOCYTIC NORMOCHROMIC ALONG WITH OVALOCYTES POLYCHROMATOPHILS',
+    'SEVERE MICROCYTIC HYPOCHROMIC ANEMIA'
+  ];
+
   // Get default values for specific tests
   const getDefaultValue = (testName: string): string => {
     const defaults: Record<string, string> = {
-      'RBC\'s': 'NORMOCYTIC',
+      'RBC\'s': 'NORMOCYTIC / NORMOCHROMIC',
       'WBC\'s': 'WITHIN NORMAL LIMITS',
       'PLATELETS': 'adequate'
     };
@@ -385,6 +398,59 @@ export default function EnterResults() {
     return 'WITHIN NORMAL LIMITS';
   };
 
+  // Auto-calculate RBC assessment based on blood values
+  const calculateRBCAssessment = (currentResults: TestResult[]): string => {
+    const hemoglobin = parseFloat(currentResults.find(r => r.testName === 'HAEMOGLOBIN')?.value || '0');
+    const rbcCount = parseFloat(currentResults.find(r => r.testName === 'Total R.B.C COUNT')?.value || '0');
+    const mcv = parseFloat(currentResults.find(r => r.testName === 'MCV')?.value || '0');
+    const mchc = parseFloat(currentResults.find(r => r.testName === 'MCHC')?.value || '0');
+
+    // If no values entered yet, return default
+    if (!hemoglobin && !rbcCount && !mcv && !mchc) return 'NORMOCYTIC / NORMOCHROMIC';
+
+    // Define normal ranges (these should match the reference ranges used elsewhere)
+    const isMCVNormal = mcv >= 83 && mcv <= 101;
+    const isMCVDecreased = mcv < 83;
+    const isMCHCNormal = mchc >= 31.5 && mchc <= 36;
+    const isMCHCDecreased = mchc < 31.5;
+    const isHemoglobinNormal = patient?.gender === 'Male' 
+      ? (hemoglobin >= 13.5 && hemoglobin <= 18)
+      : (hemoglobin >= 11.5 && hemoglobin <= 16);
+    const isRBCNormal = patient?.gender === 'Male'
+      ? (rbcCount >= 4.5 && rbcCount <= 6.5)
+      : (rbcCount >= 3.8 && rbcCount <= 5.8);
+
+    // Apply assessment logic in priority order
+    
+    // Severe Microcytic Hypochromic Anemia
+    if (mcv < 40 && mchc < 25 && hemoglobin >= 6.5 && hemoglobin <= 8.0) {
+      return 'SEVERE MICROCYTIC HYPOCHROMIC ANEMIA';
+    }
+    
+    // Microcytic / Hypochromic
+    if (isMCVDecreased && isMCHCDecreased) {
+      return 'MICROCYTIC / HYPOCHROMIC';
+    }
+    
+    // Normocytic / mild Hypochromic (MCHC 30-31.5)
+    if (isMCVNormal && mchc >= 30 && mchc < 31.5) {
+      return 'NORMOCYTIC / MILD HYPOCHROMIC';
+    }
+    
+    // Normocytic / Hypochromic (MCHC < 31.5)
+    if (isMCVNormal && isMCHCDecreased) {
+      return 'NORMOCYTIC / HYPOCHROMIC';
+    }
+    
+    // Normocytic / Normochromic (all normal)
+    if (isMCVNormal && isMCHCNormal && isHemoglobinNormal && isRBCNormal) {
+      return 'NORMOCYTIC / NORMOCHROMIC';
+    }
+    
+    // Default fallback
+    return 'NORMOCYTIC / NORMOCHROMIC';
+  };
+
   // Determine result status based on value and normal range
   const determineStatus = (value: string, testName: string): 'normal' | 'high' | 'low' | 'critical' => {
     // For text-based parameters, always return normal
@@ -516,6 +582,20 @@ export default function EnterResults() {
             const calculatedAssessment = calculateWBCAssessment(updated);
             updated[wbcIndex] = {
               ...updated[wbcIndex],
+              value: calculatedAssessment,
+              status: 'normal'
+            };
+          }
+        }
+        
+        // Auto-calculate RBC assessment when RBC-related values change
+        const rbcRelatedTests = ['HAEMOGLOBIN', 'Total R.B.C COUNT', 'MCV', 'MCHC'];
+        if (rbcRelatedTests.includes(updated[index].testName)) {
+          const rbcIndex = updated.findIndex(result => result.testName === 'RBC\'s');
+          if (rbcIndex !== -1) {
+            const calculatedAssessment = calculateRBCAssessment(updated);
+            updated[rbcIndex] = {
+              ...updated[rbcIndex],
               value: calculatedAssessment,
               status: 'normal'
             };
@@ -929,6 +1009,11 @@ export default function EnterResults() {
                                     Auto-assessed
                                   </span>
                                 )}
+                                {result.testName === 'RBC\'s' && (
+                                  <span className="ml-2 text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                                    Auto-assessed
+                                  </span>
+                                )}
                               </Label>
                               {result.testName === 'WBC\'s' ? (
                                 <Select 
@@ -946,11 +1031,27 @@ export default function EnterResults() {
                                     ))}
                                   </SelectContent>
                                 </Select>
+                              ) : result.testName === 'RBC\'s' ? (
+                                <Select 
+                                  value={result.value} 
+                                  onValueChange={(value) => updateResult(index, 'value', value)}
+                                >
+                                  <SelectTrigger className="mt-1">
+                                    <SelectValue placeholder="Select RBC assessment" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {RBC_ASSESSMENT_OPTIONS.map((option) => (
+                                      <SelectItem key={option} value={option}>
+                                        {option}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
                               ) : (
                                 <Input
                                   id={`value-${index}`}
                                   type={
-                                    (result.testName === 'RBC\'s' || result.testName === 'PLATELETS') 
+                                    result.testName === 'PLATELETS' 
                                       ? 'text' : 'number'
                                   }
                                   step="0.01"
@@ -962,7 +1063,6 @@ export default function EnterResults() {
                                     result.testName === 'MCV' ? 'Auto-calculates from PCV & RBC' :
                                     result.testName === 'MCH' ? 'Auto-calculates from Hb & RBC' :
                                     result.testName === 'MCHC' ? 'Auto-calculates from Hb & PCV' :
-                                    result.testName === 'RBC\'s' ? 'RBC morphology' :
                                     result.testName === 'PLATELETS' ? 'Platelet adequacy' :
                                     'Enter value'
                                   }
