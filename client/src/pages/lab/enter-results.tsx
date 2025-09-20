@@ -216,12 +216,24 @@ export default function EnterResults() {
     'SEVERE MICROCYTIC HYPOCHROMIC ANEMIA'
   ];
 
+  // PLATELETS Assessment Options
+  const PLATELETS_ASSESSMENT_OPTIONS = [
+    'ADEQUATE',
+    'DECREASE ON SMEAR - THROMBOCYTOPENIA',
+    'INCREASE ON SMEAR - THROMBOCYTOSIS',
+    'MILD - THROMBOCYTOPENIA',
+    'MILD - THROMBOCYTOSIS',
+    'ADEQUATE WITH GIANT PLATELETS',
+    'MODERATE THROMBOCYTOPENIA',
+    'SEVERE THROMBOCYTOPENIA'
+  ];
+
   // Get default values for specific tests
   const getDefaultValue = (testName: string): string => {
     const defaults: Record<string, string> = {
       'RBC\'s': 'NORMOCYTIC / NORMOCHROMIC',
       'WBC\'s': 'WITHIN NORMAL LIMITS',
-      'PLATELETS': 'adequate'
+      'PLATELETS': 'ADEQUATE'
     };
     return defaults[testName] || '';
   };
@@ -451,6 +463,44 @@ export default function EnterResults() {
     return 'NORMOCYTIC / NORMOCHROMIC';
   };
 
+  // Auto-calculate PLATELETS assessment based on platelet count
+  const calculatePLATELETSAssessment = (currentResults: TestResult[]): string => {
+    const platelets = parseFloat(currentResults.find(r => r.testName === 'PLATELETS')?.value || '0');
+
+    // If no value entered yet, return default
+    if (!platelets) return 'ADEQUATE';
+
+    // Apply assessment logic based on platelet count ranges (values are in thousands)
+    
+    // Severe Thrombocytopenia (< 50,000)
+    if (platelets < 50) {
+      return 'SEVERE THROMBOCYTOPENIA';
+    }
+    
+    // Moderate Thrombocytopenia (50,000 - 100,000)
+    if (platelets >= 50 && platelets < 100) {
+      return 'MODERATE THROMBOCYTOPENIA';
+    }
+    
+    // Mild Thrombocytopenia (100,000 - 150,000)
+    if (platelets >= 100 && platelets < 150) {
+      return 'MILD - THROMBOCYTOPENIA';
+    }
+    
+    // Mild Thrombocytosis (400,000 - 500,000)
+    if (platelets > 400 && platelets <= 500) {
+      return 'MILD - THROMBOCYTOSIS';
+    }
+    
+    // Normal/Adequate (150,000 - 400,000)
+    if (platelets >= 150 && platelets <= 400) {
+      return 'ADEQUATE';
+    }
+    
+    // Default fallback for other values
+    return 'ADEQUATE';
+  };
+
   // Determine result status based on value and normal range
   const determineStatus = (value: string, testName: string): 'normal' | 'high' | 'low' | 'critical' => {
     // For text-based parameters, always return normal
@@ -596,6 +646,19 @@ export default function EnterResults() {
             const calculatedAssessment = calculateRBCAssessment(updated);
             updated[rbcIndex] = {
               ...updated[rbcIndex],
+              value: calculatedAssessment,
+              status: 'normal'
+            };
+          }
+        }
+        
+        // Auto-calculate PLATELETS assessment when platelet count changes
+        if (updated[index].testName === 'PLATELETS') {
+          const plateletsIndex = updated.findIndex(result => result.testName === 'PLATELETS');
+          if (plateletsIndex !== -1) {
+            const calculatedAssessment = calculatePLATELETSAssessment(updated);
+            updated[plateletsIndex] = {
+              ...updated[plateletsIndex],
               value: calculatedAssessment,
               status: 'normal'
             };
@@ -1014,6 +1077,11 @@ export default function EnterResults() {
                                     Auto-assessed
                                   </span>
                                 )}
+                                {result.testName === 'PLATELETS' && (
+                                  <span className="ml-2 text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">
+                                    Auto-assessed
+                                  </span>
+                                )}
                               </Label>
                               {result.testName === 'WBC\'s' ? (
                                 <Select 
@@ -1047,13 +1115,26 @@ export default function EnterResults() {
                                     ))}
                                   </SelectContent>
                                 </Select>
+                              ) : result.testName === 'PLATELETS' ? (
+                                <Select 
+                                  value={result.value} 
+                                  onValueChange={(value) => updateResult(index, 'value', value)}
+                                >
+                                  <SelectTrigger className="mt-1">
+                                    <SelectValue placeholder="Select PLATELETS assessment" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {PLATELETS_ASSESSMENT_OPTIONS.map((option) => (
+                                      <SelectItem key={option} value={option}>
+                                        {option}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
                               ) : (
                                 <Input
                                   id={`value-${index}`}
-                                  type={
-                                    result.testName === 'PLATELETS' 
-                                      ? 'text' : 'number'
-                                  }
+                                  type="number"
                                   step="0.01"
                                   value={result.value}
                                   onChange={(e) => updateResult(index, 'value', e.target.value)}
@@ -1063,7 +1144,6 @@ export default function EnterResults() {
                                     result.testName === 'MCV' ? 'Auto-calculates from PCV & RBC' :
                                     result.testName === 'MCH' ? 'Auto-calculates from Hb & RBC' :
                                     result.testName === 'MCHC' ? 'Auto-calculates from Hb & PCV' :
-                                    result.testName === 'PLATELETS' ? 'Platelet adequacy' :
                                     'Enter value'
                                   }
                                   className={`mt-1 ${
